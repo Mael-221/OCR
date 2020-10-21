@@ -1,0 +1,6 @@
+#ifndef GREYSCALE_H
+#define GREYSCALE_H
+
+void greyscale(SDL_Surface* image);
+
+#endif
