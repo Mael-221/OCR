@@ -1,4 +1,4 @@
-main.o: main.c /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h \
+noise.o: noise.c /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h \
  /usr/include/SDL/SDL_stdinc.h /usr/include/SDL/SDL_config.h \
  /usr/include/SDL/SDL_platform.h /usr/include/SDL/begin_code.h \
  /usr/include/SDL/close_code.h /usr/include/SDL/SDL_audio.h \

@@ -1,6 +1,0 @@
-#ifndef CONTRAST_H
-#define CONTRAST_H
-
-void contrast_up(SDL_Surface *image);
-
-#endif

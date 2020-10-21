@@ -9,8 +9,8 @@ LDLIBS= `pkg-config --libs sdl` -lSDL_image -lm -ldl
 
 all: main
 
-main: main.o pixel_operations.o grayscale.o binari.o contrast.o
-main.o : pixel_operations.h grayscale.h binari.h contrast.h
+main: main.o pixel_operations.o grayscale.o binari.o contrast.o noise.o
+main.o : pixel_operations.h grayscale.h binari.h contrast.h noise.h
 
 clean:
 	${RM} *.o
