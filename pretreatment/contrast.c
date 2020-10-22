@@ -30,9 +30,7 @@ void contrast_up(SDL_Surface* image)
 	  double n = 3;
 	  SDL_GetRGB(pixel,image->format,&r,&g,&b);
 	  r = f(r,n);
-	  n = 3;
 	  g = f(g,n);
-	  n = 3;
 	  b = f(b,n);
 	  pixel = SDL_MapRGB(image->format,r,g,b);
 	  putpixelval(image,x,y,pixel);

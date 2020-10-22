@@ -90,27 +90,21 @@ int main()
   SDL_Surface *screen;
   init_sdl();
 
-  image = load_image("images/image4.jpg");
+  image = load_image("images/image1.jpg");
   screen = display_image(image);
   wait_for_keypressed();
-
   
-
-  noise(image);
-  update_surface(screen,image);
-  wait_for_keypressed();
-
-  noise(image);
-  update_surface(screen,image);
-  wait_for_keypressed();
-
-  /*
-
   contrast_up(image);
   update_surface(screen,image);
   wait_for_keypressed();
-  */
   
+  grayscale(image);
+  update_surface(screen,image);
+  wait_for_keypressed();
+  
+  noise(image);
+  update_surface(screen,image);
+  wait_for_keypressed();
   
   binari(image);
   update_surface(screen,image);
