@@ -110,14 +110,21 @@ void divideLines(SDL_Surface* image)
 
     for (int i = 0; i < histogram->elementNumber; i++)
     {
-        SDL_Rect r;
-        r.x = 0;
-        r.y = lines[i].start;
-        r.w = image->w;
-        r.h = lines[i].end - lines[i].start;
+        SDL_Rect rtop;
+        rtop.x = 0;
+        rtop.y = lines[i].start;
+        rtop.w = image->w;
+        rtop.h = 1;
         
+        SDL_Rect rbot;
+        rbot.x = 0;
+        rbot.y = lines[i].end;
+        rbot.w = image->w;
+        rbot.h = 1;
 
-        SDL_FillRect(image,&r,SDL_MapRGB(image->format, 255,0,0));
+
+        SDL_FillRect(image,&rtop,SDL_MapRGB(image->format, 255,0,0));
+        SDL_FillRect(image,&rbot,SDL_MapRGB(image->format, 255,0,0));
 
     }
     

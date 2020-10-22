@@ -7,9 +7,9 @@ CFLAGS= -Wall -Wextra -Werror -std=c99 -O3 -lm -ldl
 LDFLAGS=
 LDLIBS= `pkg-config --libs sdl` -lSDL_image -lm -ldl
 
-all: main.exe
+all: main
 
-main.exe: main.o Tools/tools.o segmentation/histogram.o
+main: main.o Tools/tools.o segmentation/histogram.o
 main.o : Tools/tools.h segmentation/histogram.h
 
 

@@ -15,8 +15,26 @@ struct VerticalHistogram
 
 };
 
+typedef struct HorizontalHistogram HorizontalHistogram; 
+struct HorizontalHistogram
+{
+    int imgWidth;
+    
+    int elementNumber;
+
+    float hist[];
+
+};
+
 typedef struct line line; 
 struct line
+{
+    int start;
+    int end;
+};
+
+typedef struct column column; 
+struct column
 {
     int start;
     int end;
