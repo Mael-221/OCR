@@ -28,7 +28,6 @@ void binari(SDL_Surface *image)
 	      pixel = SDL_MapRGB(image->format,0,0,0);
 	      putpixelval(image,x,y,pixel);
 	    }
-	  
 	  y = y + 1;
 	}
       x = x + 1;
