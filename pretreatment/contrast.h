@@ -2,6 +2,6 @@
 #define CONTRAST_H
 
 Uint8 f(Uint8 c,double n);
-void contrast_up(SDL_Surface *image);
+void contrast(SDL_Surface *image,double n);
 
 #endif
