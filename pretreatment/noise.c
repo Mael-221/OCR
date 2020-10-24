@@ -40,8 +40,11 @@ void noise(SDL_Surface* image)
 		  Uint32 pixelxyp = getpixelval(image,x,y+1);
 		  Uint8 rxyp , gxyp ,bxyp;
 		  SDL_GetRGB(pixelxyp,image->format,&rxyp,&gxyp,&bxyp);
+		  r = (r+rxpy+rxpyp+rxyp)/4;
+		  g = (g+gxpy+gxpyp+gxyp)/4;
+		  b = (b+bxpy+bxpyp+bxyp)/4;
 		  
-		  pixel = SDL_MapRGB(image->format,(r+rxpy+rxpyp+rxyp)/4,(g+gxpy+gxpyp+gxyp)/4,(b+bxpy+bxpyp+bxyp)/4);//done
+		  pixel = SDL_MapRGB(image->format,r,g,b);//done
 		  putpixelval(image,x,y,pixel);
 		  
 		}
@@ -65,8 +68,10 @@ void noise(SDL_Surface* image)
 		      Uint32 pixelxym = getpixelval(image,x,y-1);
 		      Uint8 rxym , gxym ,bxym;
 		      SDL_GetRGB(pixelxym,image->format,&rxym,&gxym,&bxym);
-		      
-		      pixel = SDL_MapRGB(image->format,(r+rxpy+rxpym+rxym)/4,(g+gxpy+gxpym+gxym)/4,(b+bxpy+bxpym+bxym)/4);//done
+		      r = (r+rxpy+rxpym+rxym)/4;
+		      g = (g+gxpy+gxpym+gxym)/4;
+		      b = (b+bxpy+bxpym+bxym)/4;
+		      pixel = SDL_MapRGB(image->format,r,g,b);//done
 		      putpixelval(image,x,y,pixel);
 		    }
 		  else
@@ -95,8 +100,11 @@ void noise(SDL_Surface* image)
 		      Uint32 pixelxyp = getpixelval(image,x,y+1);
 		      Uint8 rxyp , gxyp ,bxyp;
 		      SDL_GetRGB(pixelxyp,image->format,&rxyp,&gxyp,&bxyp);
+		      r = ((r+rxym+rxpym+rxpy+rxyp)/6);
+		      g = ((g+gxym+gxpym+gxpy+gxyp)/6);
+		      b = ((b+bxym+bxpym+bxpy+bxyp)/6);
 		      
-		      pixel = SDL_MapRGB(image->format,((r+rxym+rxpym+rxpy+rxyp)/6),((g+gxym+gxpym+gxpy+gxyp)/6),((b+bxym+bxpym+bxpy+bxyp)/6));//done
+		      pixel = SDL_MapRGB(image->format,r,g,b);//done
 	              putpixelval(image,x,y,pixel);
 		    }
 		}
@@ -123,8 +131,11 @@ void noise(SDL_Surface* image)
 		      Uint32 pixelxyp = getpixelval(image,x,y+1);
 		      Uint8 rxyp , gxyp ,bxyp;
 		      SDL_GetRGB(pixelxyp,image->format,&rxyp,&gxyp,&bxyp);
+		      r = (r+rxmy+rxmyp+rxyp)/4;
+		      g = (g+gxmy+gxmyp+gxyp)/4;
+		      b = (b+bxmy+bxmyp+bxyp)/4;
 		      
-		      pixel = SDL_MapRGB(image->format,(r+rxmy+rxmyp+rxyp)/4,(g+gxmy+gxmyp+gxyp)/4,(b+bxmy+bxmyp+bxyp)/4);//done
+		      pixel = SDL_MapRGB(image->format,r,g,b);//done
 		      putpixelval(image,x,y,pixel);
 		    }
 		  else
@@ -147,8 +158,12 @@ void noise(SDL_Surface* image)
 		          Uint32 pixelxym = getpixelval(image,x,y-1);
 		          Uint8 rxym , gxym ,bxym;
 		          SDL_GetRGB(pixelxym,image->format,&rxym,&gxym,&bxym);
+			  r = (r+rxmy+rxmym+rxym)/4;
+			  g = (g+gxmy+gxmym+gxym)/4;
+			  b = (b+bxmy+bxmym+bxym)/4;
 			  
-		          pixel = SDL_MapRGB(image->format,(r+rxmy+rxmym+rxym)/4,(g+gxmy+gxmym+gxym)/4,(b+bxmy+bxmym+bxym)/4);//done
+			  
+		          pixel = SDL_MapRGB(image->format,r,g,b);//done
 		          putpixelval(image,x,y,pixel);
 			}
 		      else
