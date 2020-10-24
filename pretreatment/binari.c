@@ -2,6 +2,7 @@
 #include <SDL_image.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "binari.h"
 #include "pixel_operations.h"
 
 void binari(SDL_Surface *image)

@@ -8,7 +8,7 @@ void init_sdl();
 
 SDL_Surface* display_image(SDL_Surface *img);
 
-SDL_Surface* load_image(char *path);
+SDL_Surface* load_image(const char *path);
 
 void wait_for_keypressed();
 

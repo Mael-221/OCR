@@ -2,6 +2,7 @@
 #include <SDL_image.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "grayscale.h"
 #include "pixel_operations.h"
 
 void grayscale(SDL_Surface* image)

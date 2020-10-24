@@ -35,7 +35,7 @@ SDL_Surface* display_image(SDL_Surface *img)
     return screen;
 }
 
-SDL_Surface* load_image(char *path)
+SDL_Surface* load_image(const char *path)
 {
     SDL_Surface *img;
 
