@@ -86,8 +86,8 @@ int main(int argc, char const *argv[])
 
             if (STRCMP(argv[i],"-contrast") == 0 || STRCMP(argv[i],"-c") == 0)
             {
-                contrast_up(image);
-                contrast_up(debug);
+                contrast(image,255);
+                contrast(debug,255);
             }
 
             if (STRCMP(argv[i],"-gray") == 0|| STRCMP(argv[i],"-g") == 0)
