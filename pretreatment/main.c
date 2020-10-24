@@ -1,5 +1,5 @@
-#include <SDL.h>
-#include <SDL_image.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "grayscale.h"
@@ -9,6 +9,7 @@
 #include "contrast.h"
 #include <math.h>
 #include "noise.h"
+#include "segmentation.h"
 
 //gcc $(sdl2-config --cflags --libs) -o prog *.c
 
@@ -90,26 +91,26 @@ int main()
   SDL_Surface *screen;
   init_sdl();
 
-  image = load_image("images/image1.jpg");
+  image = load_image("images/0.png");
   screen = display_image(image);
   wait_for_keypressed();
   
-  contrast_up(image);
+  contrast(image,0.3333);
+  update_surface(screen,image);
+  wait_for_keypressed();
+
+  contrast(image,3);
   update_surface(screen,image);
   wait_for_keypressed();
   
   grayscale(image);
   update_surface(screen,image);
   wait_for_keypressed();
-  
-  noise(image);
-  update_surface(screen,image);
-  wait_for_keypressed();
-  
-  binari(image);
-  update_surface(screen,image);
-  wait_for_keypressed();
 
+  line_cut(image);
+  update_surface(screen,image);
+  wait_for_keypressed();
+  
   SDL_Quit();
 
   return EXIT_SUCCESS;
