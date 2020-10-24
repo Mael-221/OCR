@@ -1,17 +1,7 @@
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include "tools.h"
+#include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "grayscale.h"
-#include "binari.h"
-#include <err.h>
-#include "pixel_operations.h"
-#include "contrast.h"
-#include <math.h>
-#include "noise.h"
-#include "segmentation.h"
-
-//gcc $(sdl2-config --cflags --libs) -o prog *.c
 
 void init_sdl()
 {
@@ -58,7 +48,6 @@ SDL_Surface* load_image(char *path)
     return img;
 }
 
-
 void wait_for_keypressed()
 {
     SDL_Event event;
@@ -84,34 +73,64 @@ void update_surface(SDL_Surface* screen, SDL_Surface* image)
     SDL_UpdateRect(screen, 0, 0, image->w, image->h);
 }
 
-
-int main()
+Uint32 getpixelval(SDL_Surface *image, int x, int y)
 {
-  SDL_Surface *image;
-  SDL_Surface *screen;
-  init_sdl();
+    int bpp = image->format->BytesPerPixel;
+    Uint8 *p = (Uint8 *)image->pixels + y * image->pitch + x * bpp;
 
-  image = load_image("images/0.png");
-  screen = display_image(image);
-  wait_for_keypressed();
-  
-  contrast(image,0.3333);
-  update_surface(screen,image);
-  wait_for_keypressed();
+    switch(bpp) {
+    case 1:
+        return *p;
+        break;
 
-  contrast(image,3);
-  update_surface(screen,image);
-  wait_for_keypressed();
-  
-  grayscale(image);
-  update_surface(screen,image);
-  wait_for_keypressed();
+    case 2:
+        return *(Uint16 *)p;
+        break;
 
-  line_cut(image);
-  update_surface(screen,image);
-  wait_for_keypressed();
-  
-  SDL_Quit();
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            return p[0] << 16 | p[1] << 8 | p[2];
+        else
+            return p[0] | p[1] << 8 | p[2] << 16;
+        break;
 
-  return EXIT_SUCCESS;
+    case 4:
+        return *(Uint32 *)p;
+        break;
+
+    default:
+        return 0;
+    }
+}
+
+void putpixelval(SDL_Surface *surface, int x, int y, Uint32 pixel)
+{
+    int bpp = surface->format->BytesPerPixel;
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+    switch(bpp) {
+    case 1:
+        *p = pixel;
+        break;
+
+    case 2:
+        *(Uint16 *)p = pixel;
+        break;
+
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+            p[0] = (pixel >> 16) & 0xff;
+            p[1] = (pixel >> 8) & 0xff;
+            p[2] = pixel & 0xff;
+        } else {
+            p[0] = pixel & 0xff;
+            p[1] = (pixel >> 8) & 0xff;
+            p[2] = (pixel >> 16) & 0xff;
+        }
+        break;
+
+    case 4:
+        *(Uint32 *)p = pixel;
+        break;
+    }
 }
