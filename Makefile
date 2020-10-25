@@ -27,5 +27,6 @@ clean:
 	${RM} NeuralNetwork/*.d
 	${RM} /pretreatment/segmentoueee/*.d
 	${RM} /pretreatment/segmentoueee/*.o
+	${RM} main
 
 # END
