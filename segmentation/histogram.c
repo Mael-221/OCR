@@ -55,12 +55,14 @@ int getPixelColor(SDL_Surface* image, Uint32 pixel)
 
 struct VHistogram* createVHistogram(SDL_Surface* image)
 {
+    //allocate memory for the array in the struct.
     struct VHistogram *hist = malloc(sizeof(*hist) + sizeof(int[image->h]));
 
     hist->imgHeight = image->h;
 
     hist->elementNumber = 0;
 
+    //Get the color of text (0 for black and 1 for white)
     int color = getFontColor(image);
 
     for (int i = 0; i < image->h; i++)
@@ -69,11 +71,13 @@ struct VHistogram* createVHistogram(SDL_Surface* image)
 
         for (int j = 0; j < image->w; j++)
         {
+            //Count the number of pixel of the text color in the pixel line.
             if (getPixelColor(image, getpixelval(image,j,i)) == color)
             {
                 c++;
             }
         }
+        //Make a percentage of text in the line.
         hist->hist[i] = ((float) c)/((float)image->w);
     }
     
@@ -82,6 +86,7 @@ struct VHistogram* createVHistogram(SDL_Surface* image)
 
 struct HHistogram* createHHistogram(SDL_Surface* image, line li)
 {
+    //allocate memory for the array in the struct.
     struct HHistogram *hist = malloc(sizeof(*hist) + sizeof(int[image->w]));
 
     hist->imgWidth = image->w;
@@ -96,24 +101,29 @@ struct HHistogram* createHHistogram(SDL_Surface* image, line li)
 
         for (int j = (li.start); j < li.end; j++)
         {
+            //Count the number of pixel of the text color in the pixel line.
             if (getPixelColor(image, getpixelval(image,i,j)) == color)
             {
                 c++;
             }
         }
+        //Make a percentage of text in the line.
         hist->hist[i] = ((float) c)/((float)(li.end-li.start));
     }
     
     return hist;
 }
 
+//Complete segmentation
 struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug)
 {
+    //Variables to segment the text in lines.
     VHistogram* lineHist = createVHistogram(image);
     int numberOfLines = NumberOfLines(lineHist, image->h);
 
     line* lines = divideInLines(image,numberOfLines,lineHist,debug);
 
+    //Allocate memory for the letters struct stored to feed neural network.
     Letter* letters = malloc(sizeof(Letter*));
 
     for (int i = 0; i < numberOfLines; i++)
@@ -139,7 +149,7 @@ struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug)
 
 line *divideInLines(SDL_Surface* img, int nbL, VHistogram* h, SDL_Surface* Dbg)
 {
-
+    //Allocate memory for the array in the struct.
     line* lines = malloc(nbL * sizeof(line));
 
     int c = 0;
@@ -165,6 +175,8 @@ line *divideInLines(SDL_Surface* img, int nbL, VHistogram* h, SDL_Surface* Dbg)
     {
         for (int i = 0; i < h->elementNumber; i++)
         {
+            //Draw debug lines for a clear representation
+
             SDL_Rect rtop;
             rtop.x = 0;
             rtop.y = lines[i].start;
@@ -215,6 +227,8 @@ column *divideInLetter(SDL_Surface* img, line li,int* nb, SDL_Surface* Dbg)
     {
         for (int i = 0; i < hist->elementNumber; i++)
         {
+            //Draw debug lines for a clear representation
+
             SDL_Rect rleft;
             rleft.x = columns[i].start;
             rleft.y = li.start;
@@ -305,6 +319,7 @@ int columnSize(HHistogram* histogram, int start, int w, float pixelLimit)
 
     if (pixelLimit != 0)
     {
+        //offset the limit to accept all cases.
         pixelLimit -= 0.000001;
     }
     
@@ -398,6 +413,7 @@ void fixGroups(SDL_Surface* image, line l,column* columns, SDL_Surface* debug)
     */
 }
 
+//try to merge two array (not finished)
 Letter* mergeLetters(Letter* base, Letter* addition)
 {
     Letter* result = malloc(sizeof(base) + sizeof(addition));

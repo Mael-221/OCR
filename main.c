@@ -43,6 +43,8 @@
     return 0;
 }*/
 
+
+//Compare two string
 int STRCMP (const char *p1, const char *p2)
 {
   const unsigned char *s1 = (const unsigned char *) p1;
@@ -63,6 +65,7 @@ int main(int argc, char const *argv[])
 {  
     if (argc >= 1)
     {
+        //Initializing the image for treatment and a debug image for segmentation.
         SDL_Surface *image;
         SDL_Surface *debug;
 
@@ -83,10 +86,16 @@ int main(int argc, char const *argv[])
                 binari(debug);
             }
 
-            if (STRCMP(argv[i],"-contrast") == 0 || STRCMP(argv[i],"-c") == 0)
+            if (STRCMP(argv[i],"-contrastup") == 0 || STRCMP(argv[i],"-cup") == 0)
             {
-                contrast(image,255);
-                contrast(debug,255);
+                contrast(image,3);
+                contrast(debug,3);
+            }
+
+            if (STRCMP(argv[i],"-contrastdown") == 0 || STRCMP(argv[i],"-cdown") == 0)
+            {
+                contrast(image,0.3);
+                contrast(debug,0.3);
             }
 
             if (STRCMP(argv[i],"-grayscale") == 0|| STRCMP(argv[i],"-g") == 0)
