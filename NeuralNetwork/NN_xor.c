@@ -211,95 +211,15 @@ void ForwardPass(struct Neural_Network *net,int pos,int epoch)
     }
 
 }
-/*
-void MuteWeights(struct Neural_Network *net,int pos)
-{
-   
-    double dError=((*net).output-(*net).target[pos/2])
-        *derivative_sigmoid((*net).output);
-    for(int i=0;i<(*net).nbHidden;i++)
-    {
-        (*net).deltaOutput[i]=dError*(*net).hiddenLayer[i];
-    }
-    for(int i=0;i<(*net).nbHidden;i++)
-    {
-        double Nerror=dError*(*net).outputWeights[i];
-        for(int j=0;j<(*net).nbInput;j++)
-        {
-            (*net).deltaHidden[i+j*(*net).nbHidden]=Nerror*
-                derivative_sigmoid((*net).hiddenLayer[i])
-                *(*net).input_values[pos+j];
-        }
-
-    }
-
-}
-
-void MuteBiases(struct Neural_Network *net,int pos)
-{
-    double dError=((*net).output-(*net).target[pos/2])
-        *derivative_sigmoid((*net).output);
-    (*net).dBiasO+=dError;
-    for(int i=0;i<(*net).nbHidden;i++)
-    {
-        (*net).dBiasH[i]+=dError*
-            derivative_sigmoid((*net).hiddenLayer[i])
-            *(*net).outputWeights[i];
-    }
-
-}
-void ReinitializeDeltas(struct Neural_Network *net)
-{
-    (*net).dBiasO=0.0;
-    (*net).output=0.0;
-    for(int i=0;i<(*net).nbHidden;i++)
-    {
-        (*net).dBiasH[i]=0.0;
-        (*net).deltaOutput[i]=0.0;
-        (*net).hiddenLayer[i]=0.0;
-        for(int j=0;j<(*net).nbInput;j++)
-        {
-            (*net).deltaHidden[i+j]=0.0;
-
-        }
 
 
-    }
-}
-void BackwardPass(struct Neural_Network *net,int pos)
-{
-    MuteWeights(net,pos);
-    MuteBiases(net,pos);
-    (*net).outputBias-=0.5*(*net).dBiasO;
-    for(int i=0;i<(*net).nbHidden;i++)
-    {
-        (*net).outputWeights[i]-=(*net).deltaOutput[i];
-        (*net).hiddenBias[i]-=0.5*(*net).dBiasH[i];
-         for(int j=0;j<(*net).nbInput;j++)
-        {
-            (*net).hiddenWeights[i+j*(*net).nbHidden]-=
-                (*net).deltaHidden[i+j*(*net).nbHidden];
-        }
-
-
-    }
-    ReinitializeDeltas(net);
-
-}*/
-
-
-
-void BackwardPass(struct Neural_Network *net,int pos,double lr,int epoch)
+void BackwardPass(struct Neural_Network *net,int pos,double lr)
 {
    
     double dError=((*net).target[pos/2]-(*net).output);
     (*net).deltaOutput[0]=dError*derivative_sigmoid((*net).output);
 
-    if(epoch%10000==0)
-    {
-        printf("dError+==%f \n"
-                ,((*net).target[pos/2]-(*net).output));
-    }
+
 
    
    for(int i =0;i<(*net).nbHidden;i++)
@@ -319,17 +239,8 @@ void BackwardPass(struct Neural_Network *net,int pos,double lr,int epoch)
        (*net).outputWeights[j]+=(*net).hiddenLayer[j]*
                                 (*net).deltaOutput[0]*lr;
 
-    if(epoch%10000==0)
-    {
-        printf("Weight0H[%d]+==%f \n"
-                ,j
-                ,(*net).hiddenLayer[j]*(*net).deltaOutput[0]*lr);
-    }
-
-   }
-
    
-
+   }
      for(int i =0;i<(*net).nbHidden;i++)
    {
        (*net).hiddenBias[i]+=(*net).deltaHidden[i]*lr;
@@ -338,14 +249,7 @@ void BackwardPass(struct Neural_Network *net,int pos,double lr,int epoch)
             (*net).hiddenWeights[i+j*(*net).nbHidden]+=
                 (*net).input_values[pos+i]* (*net).deltaHidden[i]*lr;
 
-        if(epoch%10000==0)
-         {
-            printf("WeightIH[%d]+==%f \n"
-                ,i+j*(*net).nbHidden
-                ,(*net).input_values[pos+j]* (*net).deltaHidden[i]*lr);
-;
-         }
-    
+           
 
        }
 
@@ -381,7 +285,7 @@ void XOR()
         for(int j=0; j<=nbinputs;j+=2)
         {
             ForwardPass(net,j,i);
-            BackwardPass(net,j,lr,i);
+            BackwardPass(net,j,lr);
 
 
         }
