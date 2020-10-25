@@ -6,6 +6,7 @@
 #include "pretreatment/contrast.h"
 #include "pretreatment/noise.h"
 #include <string.h>
+#include "segmentation2/segmentation.h"
 #include "NeuralNetwork/NN_xor.h"
 
 
@@ -118,6 +119,11 @@ int main(int argc, char const *argv[])
             if (STRCMP(argv[i],"-seg") == 0|| STRCMP(argv[i],"-s") == 0)
             {
                 createImage(image,debug);
+            }
+
+            if (STRCMP(argv[i],"-seg2") == 0|| STRCMP(argv[i],"-s2") == 0)
+            {
+                line_cut(debug);
             }
 
             if (STRCMP(argv[i],"-XOR") == 0)

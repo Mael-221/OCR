@@ -1,7 +1,3 @@
-#include <SDL.h>
-#include <SDL_image.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include "pixel_operations.h"
 
 Uint32 getpixelval(SDL_Surface *image, int x, int y)

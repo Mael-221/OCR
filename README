@@ -12,7 +12,8 @@ contrast up: -cup -contrastup
 grayscale: -g -grayscale
 noise reduction: -n -noise
 Waiting for input: -w -wait
-Complete segmentation: -s -seg
+Complete segmentation using method 1: -s -seg
+Complete segmentation using method 2: -s2 -seg2
 Neural network showcase: -XOR
 Show the current image: -show
 
