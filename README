@@ -7,8 +7,8 @@ first parameter should be a path to an image.
 Accepted parameters:
 
 binarization: -b -bin
-contrast down: -c -contrast
-contrast up: -c -contrast
+contrast down: -cdown -contrastdown
+contrast up: -cup -contrastup
 grayscale: -g -grayscale
 noise reduction: -n -noise
 Waiting for input: -w -wait
