@@ -55,11 +55,11 @@ int getPixelColor(SDL_Surface* image, Uint32 pixel)
 
 struct VHistogram* createVHistogram(SDL_Surface* image)
 {
-    struct VHistogram *histogram = malloc(sizeof(*histogram) + sizeof(int[image->h]));
+    struct VHistogram *hist = malloc(sizeof(*hist) + sizeof(int[image->h]));
 
-    histogram->imgHeight = image->h;
+    hist->imgHeight = image->h;
 
-    histogram->elementNumber = 0;
+    hist->elementNumber = 0;
 
     int color = getFontColor(image);
 
@@ -74,19 +74,19 @@ struct VHistogram* createVHistogram(SDL_Surface* image)
                 c++;
             }
         }
-        histogram->hist[i] = ((float) c)/((float)image->w);
+        hist->hist[i] = ((float) c)/((float)image->w);
     }
     
-    return histogram;
+    return hist;
 }
 
-struct HorizontalHistogram* createHHistogram(SDL_Surface* image, line li)
+struct HHistogram* createHHistogram(SDL_Surface* image, line li)
 {
-    struct HorizontalHistogram *histogram = malloc(sizeof(*histogram) + sizeof(int[image->w]));
+    struct HHistogram *hist = malloc(sizeof(*hist) + sizeof(int[image->w]));
 
-    histogram->imgWidth = image->w;
+    hist->imgWidth = image->w;
 
-    histogram->elementNumber = 0;
+    hist->elementNumber = 0;
 
     int color = getFontColor(image);
 
@@ -101,10 +101,10 @@ struct HorizontalHistogram* createHHistogram(SDL_Surface* image, line li)
                 c++;
             }
         }
-        histogram->hist[i] = ((float) c)/((float)(li.end-li.start));
+        hist->hist[i] = ((float) c)/((float)(li.end-li.start));
     }
     
-    return histogram;
+    return hist;
 }
 
 struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug)
@@ -137,22 +137,22 @@ struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug)
     return img;
 }
 
-line *divideInLines(SDL_Surface* image, int nbLines, VHistogram* histogram, SDL_Surface* DebugImage)
+line *divideInLines(SDL_Surface* img, int nbL, VHistogram* h, SDL_Surface* Dbg)
 {
 
-    line* lines = malloc(nbLines * sizeof(line));
+    line* lines = malloc(nbL * sizeof(line));
 
     int c = 0;
 
     int lineNumber = 0;
 
-    while (c < image->h)
+    while (c < img->h)
     {
-        int taille = lineSize(histogram, c, image->h);
+        int taille = lineSize(h, c, img->h);
 
-        if (histogram->hist[c] != 0)
+        if (h->hist[c] != 0)
         {
-            histogram->elementNumber++;
+            h->elementNumber++;
             line l = {c,c+taille-1,0};
             lines[lineNumber] = l;
             lineNumber++;
@@ -161,48 +161,48 @@ line *divideInLines(SDL_Surface* image, int nbLines, VHistogram* histogram, SDL_
         c += taille;
     }
 
-    if (DebugImage)
+    if (Dbg)
     {
-        for (int i = 0; i < histogram->elementNumber; i++)
+        for (int i = 0; i < h->elementNumber; i++)
         {
             SDL_Rect rtop;
             rtop.x = 0;
             rtop.y = lines[i].start;
-            rtop.w = image->w;
+            rtop.w = img->w;
             rtop.h = 1;
         
             SDL_Rect rbot;
             rbot.x = 0;
             rbot.y = lines[i].end;
-            rbot.w = image->w;
+            rbot.w = img->w;
             rbot.h = 1;
 
-            SDL_FillRect(DebugImage,&rtop,SDL_MapRGB(DebugImage->format, 255,0,0));
-            SDL_FillRect(DebugImage,&rbot,SDL_MapRGB(DebugImage->format, 255,0,0));
+            SDL_FillRect(Dbg,&rtop,SDL_MapRGB(Dbg->format, 255,0,0));
+            SDL_FillRect(Dbg,&rbot,SDL_MapRGB(Dbg->format, 255,0,0));
         }
     }
 
     return lines;
 }
 
-column *divideInLetter(SDL_Surface* image, line li,int* nb, SDL_Surface* DebugImage)
+column *divideInLetter(SDL_Surface* img, line li,int* nb, SDL_Surface* Dbg)
 {
-    HorizontalHistogram* histogram = createHHistogram(image,li);
+    HHistogram* hist = createHHistogram(img,li);
 
-    column* columns = malloc(NumberOfColumns(histogram,image->w) * sizeof(column));
+    column* columns = malloc(NumberOfColumns(hist,img->w) * sizeof(column));
 
     int c = 0;
 
     int columnNumber = 0;
 
-    while (c < image->w)
+    while (c < img->w)
     {
         
-        int taille = columnSize(histogram, c, image->w,0);
+        int taille = columnSize(hist, c, img->w,0);
 
-        if (histogram->hist[c] != 0)
+        if (hist->hist[c] != 0)
         {
-            histogram->elementNumber++;
+            hist->elementNumber++;
             column l = {c,c+taille-1};
             columns[columnNumber] = l;
             columnNumber++;
@@ -211,9 +211,9 @@ column *divideInLetter(SDL_Surface* image, line li,int* nb, SDL_Surface* DebugIm
         c += taille;
     }
 
-    if (DebugImage)
+    if (Dbg)
     {
-        for (int i = 0; i < histogram->elementNumber; i++)
+        for (int i = 0; i < hist->elementNumber; i++)
         {
             SDL_Rect rleft;
             rleft.x = columns[i].start;
@@ -227,8 +227,8 @@ column *divideInLetter(SDL_Surface* image, line li,int* nb, SDL_Surface* DebugIm
             rright.w = 1;
             rright.h = li.end-li.start;
 
-            SDL_FillRect(DebugImage,&rleft,SDL_MapRGB(DebugImage->format, 255,0,0));
-            SDL_FillRect(DebugImage,&rright,SDL_MapRGB(DebugImage->format, 255,0,0));
+            SDL_FillRect(Dbg,&rleft,SDL_MapRGB(Dbg->format, 255,0,0));
+            SDL_FillRect(Dbg,&rright,SDL_MapRGB(Dbg->format, 255,0,0));
         }
     }
 
@@ -257,7 +257,7 @@ int NumberOfLines(VHistogram* histogram,int h)
     return linenumbers;
 }
 
-int NumberOfColumns(HorizontalHistogram* histogram,int w)
+int NumberOfColumns(HHistogram* histogram,int w)
 {
     int c=0;
 
@@ -298,7 +298,7 @@ int lineSize(VHistogram* histogram, int start, int h)
     return c;
 }
 
-int columnSize(HorizontalHistogram* histogram, int start, int w, float pixelLimit)
+int columnSize(HHistogram* histogram, int start, int w, float pixelLimit)
 {
     float startValue = histogram->hist[start];
     int c = 0; 
@@ -360,9 +360,13 @@ void fixGroups(SDL_Surface* image, line l,column* columns, SDL_Surface* debug)
             {
                 HorizontalHistogram* hist = createHHistogram(image,l);
 
-                int c = columnSize(hist, columns[i].start, columns[i].end , count /((float)(l.end-l.start)));
+                int c = columnSize(hist, columns[i].start, columns[i].end 
+                                   , count /((float)(l.end-l.start)));
 
-                //printf("c:%d    start:%f  end:%d    limit:%f\n",c,hist->hist[columns[i].start],columns[i].end - columns[i].start,count /((float)(l.end-l.start)));
+                //printf("c:%d    start:%f  end:%d    limit:%f\n",c,
+                hist->hist[columns[i].start],
+                columns[i].end - columns[i].start,
+                count /((float)(l.end-l.start)));
             
                 if (c == columns[i].end - columns[i].start || c== 0)
                 {

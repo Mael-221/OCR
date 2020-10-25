@@ -61,7 +61,6 @@ int STRCMP (const char *p1, const char *p2)
 
 int main(int argc, char const *argv[])
 {  
-    printf("%d",argc);
     if (argc >= 1)
     {
         SDL_Surface *image;
@@ -90,7 +89,7 @@ int main(int argc, char const *argv[])
                 contrast(debug,255);
             }
 
-            if (STRCMP(argv[i],"-gray") == 0|| STRCMP(argv[i],"-g") == 0)
+            if (STRCMP(argv[i],"-grayscale") == 0|| STRCMP(argv[i],"-g") == 0)
             {
                 grayscale(image);
                 grayscale(debug);
@@ -114,7 +113,7 @@ int main(int argc, char const *argv[])
 
             if (STRCMP(argv[i],"-XOR") == 0)
             {
-                
+                XOR();
             }
 
             if (STRCMP(argv[i],"-present") == 0)
@@ -122,9 +121,17 @@ int main(int argc, char const *argv[])
                 //for the presentation
             }
 
+            if (STRCMP(argv[i],"-line") == 0)
+            {
+                VHistogram* lineHist = createVHistogram(image);
+
+                int numberOfLines = NumberOfLines(lineHist, image->h);
+
+                divideInLines(image,numberOfLines,lineHist,debug);
+            }
+
             if (STRCMP(argv[i], "-show") == 0)
             {
-                printf("E");
                 init_sdl();
                 display_image(debug);
                 wait_for_keypressed();
