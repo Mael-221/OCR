@@ -7,12 +7,14 @@
 
 SDL_Surface* rotation(SDL_Surface* image,int de)
 {
+  if(de>180)
+    de = de - 180;
   double deg = de*0.0174533;
   int width = image -> w;
   int height = image -> h;
   
-  int Rwidth = sqrt(width*width+height*height);
-  int Rheight = sqrt(width*width+height*height);
+  int Rwidth = sqrt(width*width+height*height );
+int Rheight = sqrt(width*width+height*height );//- 2*(width*height*sin(deg)
   
   SDL_Surface *rotatedimage;
   rotatedimage = SDL_CreateRGBSurface(0,Rwidth,Rheight,32,0,0,0,0);
@@ -42,11 +44,23 @@ SDL_Surface* rotation(SDL_Surface* image,int de)
 	  //Uint32 pixel = SDL_MapRGB(rotatedimage->format,150,5,0);
 	  Uint32 pixel = getpixelval(image,x,y);
 	  //Uint8 r , g ,b;
-	  //SDL_GetRGB(pixel,image->format,&r,&g,&b);
-	 
+	  //SDL_GetRGB(pixel,image->format,&r,&g,&b)
 	  //putpixelval(rotatedimage,x,y,pixel);
-	  double x2 =(x)*cos(deg)+(y)*sin(deg);
-	  double y2 =Rheight/2+(y)*cos(deg)-(x)*sin(deg);
+	  double x2 = 0;
+	  double y2 = 0;
+	  if((de >= 45 && de<=90))
+	    x2 =height*sin(deg)+(x)*cos(deg) - (y)*sin(deg);
+	  else
+	    x2 = height*sin(deg) + (x)*cos(deg) - (y)*sin(deg);
+
+	  if(de>110)
+	    x2 =(x)*cos(deg) - (y)*sin(deg);
+
+	  
+	  if(de > 90)
+	    y2 =-height*cos(deg)+(y)*cos(deg) + (x)*sin(deg);
+	  else
+	     y2 =(y)*cos(deg) + (x)*sin(deg);
 	  //printf("tried in %i, %i to %f %f \n",x,y,x2,y2);
 	  if(x2<0)
 	    x2 = Rwidth+x2;
