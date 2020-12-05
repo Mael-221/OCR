@@ -93,7 +93,7 @@ int main()
 
   image = load_image("images/image2.jpg");
   grayscale(image);
-  image = rotation(image,85);
+  image = rotation(image,45);
   screen = display_image(image);
   wait_for_keypressed();
 
