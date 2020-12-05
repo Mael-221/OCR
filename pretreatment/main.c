@@ -9,7 +9,7 @@
 #include "contrast.h"
 #include <math.h>
 #include "noise.h"
-#include "segmentation.h"
+#include "rotation.h"
 
 //gcc $(sdl2-config --cflags --libs) -o prog *.c
 
@@ -91,9 +91,19 @@ int main()
   SDL_Surface *screen;
   init_sdl();
 
-  image = load_image("images/0.png");
+  image = load_image("images/image2.jpg");
   screen = display_image(image);
   wait_for_keypressed();
+  grayscale(image);
+
+  screen = display_image(image);
+  wait_for_keypressed();
+
+  
+  image = rotation(image,45);
+  screen = display_image(image);
+  wait_for_keypressed();
+
   
   contrast(image,0.3333);
   update_surface(screen,image);
@@ -103,11 +113,7 @@ int main()
   update_surface(screen,image);
   wait_for_keypressed();
   
-  grayscale(image);
-  update_surface(screen,image);
-  wait_for_keypressed();
-
-  line_cut(image);
+  noise(image);
   update_surface(screen,image);
   wait_for_keypressed();
   
