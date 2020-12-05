@@ -95,7 +95,11 @@ int main()
   screen = display_image(image);
   wait_for_keypressed();
   
-  contrast_up(image);
+  contrast(image,0.3333);
+  update_surface(screen,image);
+  wait_for_keypressed();
+
+  contrast(image,3);
   update_surface(screen,image);
   wait_for_keypressed();
   
@@ -106,7 +110,7 @@ int main()
   line_cut(image);
   update_surface(screen,image);
   wait_for_keypressed();
-
+  
   SDL_Quit();
 
   return EXIT_SUCCESS;

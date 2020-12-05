@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "pixel_operations.h"
 #include <math.h>
+#include "contrast.h"
 
 Uint8 f(Uint8 c,double n)
 {
@@ -15,7 +16,7 @@ Uint8 f(Uint8 c,double n)
     return 255 - f(255 - c,n);
 }
 
-void contrast_up(SDL_Surface* image)
+void contrast(SDL_Surface* image, double n)
 {
   int w = image -> w;
   int h = image -> h;
@@ -27,7 +28,6 @@ void contrast_up(SDL_Surface* image)
 	{
 	  Uint32 pixel = getpixelval(image,x,y);
 	  Uint8 r,g,b;
-	  double n = 3;
 	  SDL_GetRGB(pixel,image->format,&r,&g,&b);
 	  r = f(r,n);
 	  g = f(g,n);
@@ -39,3 +39,7 @@ void contrast_up(SDL_Surface* image)
       x = x + 1;
     }  
 }
+
+
+
+

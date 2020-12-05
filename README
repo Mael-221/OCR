@@ -1,0 +1,19 @@
+OCR by ScanR
+Compiled for unix systems in C99
+
+Parameters:
+first parameter should be a path to an image.
+
+Accepted parameters:
+
+binarization: -b -bin
+contrast down: -cdown -contrastdown
+contrast up: -cup -contrastup
+grayscale: -g -grayscale
+noise reduction: -n -noise
+Waiting for input: -w -wait
+Complete segmentation: -s -seg
+Neural network showcase: -XOR
+Show the current image: -show
+
+For every complete operation the result is stored in result.png in images/
