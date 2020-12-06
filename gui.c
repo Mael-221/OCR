@@ -14,6 +14,8 @@
 #include <ctype.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <glib-object.h>
+#include <gobject/gvaluecollector.h>
 
 
 //Make them Global
@@ -30,13 +32,61 @@ GtkWidget *contrast_down_b;
 GtkWidget *choose_file;
 GtkWidget *rotation_level;
 GtkBuilder *builder;
+int rotationlevel = 0;
 
-int main (int argc, char *argv[])
+void on_grayscale_b_clicked()
 {
-  gtk_init(&argc,&argc);
+  printf("grascale \n");
+}
+
+void on_binarisation_b_clicked ()
+{
+  printf("binari \n");
+}
+
+void on_segmentation_b_clicked ()
+{
+  printf("segmentation \n");
+}
+
+void on_noise_b_clicked ()
+{
+  printf("noise \n");
+}
+
+void on_rotate_b_clicked ()
+{
+  printf("rotation of %i \n",rotationlevel);
+}
+
+void on_contrast_up_b_clicked ()
+{
+  printf("contrast up \n");
+}
+
+void on_contrast_down_b_clicked ()
+{
+  printf("contrast down \n");
+}
+
+void on_rotation_level_changed(GtkEntry *e)
+{
+  //printf("rotation level = %s \n",gtk_entry_get_text(e));
+  rotationlevel = atoi(gtk_entry_get_text(e));
+}
+
+void on_choose_file_file_set(GtkFileChooserButton *f)
+{
+  printf("file name = %s \n",gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(f)));
+}
+
+
+int main ()
+{
+  gtk_init(NULL,NULL);
   
   builder = gtk_builder_new_from_file("OCR_gui.glade");
-  window = GTK_WIDGET(gtk_builder_get_object(builder,window));
+  window = GTK_WIDGET(gtk_builder_get_object(builder,"window"));
   
   g_signal_connect(window,"destroy",G_CALLBACK(gtk_main_quit),NULL);
   
@@ -54,6 +104,21 @@ int main (int argc, char *argv[])
   choose_file = GTK_WIDGET(gtk_builder_get_object(builder,"choose_file"));
   rotation_level = GTK_WIDGET(gtk_builder_get_object(builder,"rotation_level"));
 
+
+  g_signal_connect(grayscale_b,"clicked",G_CALLBACK(on_grayscale_b_clicked),NULL);
+  g_signal_connect(binarisation_b,"clicked",G_CALLBACK(on_binarisation_b_clicked),NULL);
+  g_signal_connect(segmentation_b,"clicked",G_CALLBACK(on_segmentation_b_clicked),NULL);
+  g_signal_connect(noise_b,"clicked",G_CALLBACK(on_noise_b_clicked),NULL);
+  g_signal_connect(rotate_b,"clicked",G_CALLBACK(on_rotate_b_clicked),GTK_ENTRY(rotation_level));
+  g_signal_connect(contrast_up_b,"clicked",G_CALLBACK(on_contrast_up_b_clicked),NULL);
+  g_signal_connect(contrast_down_b,"clicked",G_CALLBACK(on_contrast_down_b_clicked),NULL);
+  g_signal_connect(rotation_level,"activate",G_CALLBACK(on_rotation_level_changed),rotation_level);
+  g_signal_connect(choose_file,"file-set",G_CALLBACK(on_choose_file_file_set),choose_file);
+  
+  
+  
+  
+  
   gtk_widget_show(window);
 
   gtk_main();
@@ -61,40 +126,7 @@ int main (int argc, char *argv[])
   return EXIT_SUCCESS;
 }
 
-void on_grayscale_b_clicked (GtkButton *b)
-{
-  printf("grascale \n");
-}
 
-void on_binarisation_b_clicked (GtkButton *b)
-{
-  printf("binari \n");
-}
-
-void on_segmentation_b_clicked (GtkButton *b)
-{
-  printf("segmentation \n");
-}
-
-void on_noise_b_clicked (GtkButton *b)
-{
-  printf("noise \n");
-}
-
-void on_rotate_b_clicked (GtkButton *b)
-{
-  printf("rotate \n");
-}
-
-void on_contrast_up_b_clicked (GtkButton *b)
-{
-  printf("contrast up \n");
-}
-
-void on_contrast_down_b_clicked (GtkButton *b)
-{
-  printf("contrast down \n");
-}
 
 
 
