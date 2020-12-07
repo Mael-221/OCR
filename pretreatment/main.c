@@ -92,7 +92,14 @@ int main()
   init_sdl();
 
   image = load_image("images/image2.jpg");
+  screen = display_image(image);
+  wait_for_keypressed();
   grayscale(image);
+
+  screen = display_image(image);
+  wait_for_keypressed();
+
+  
   image = rotation(image,45);
   screen = display_image(image);
   wait_for_keypressed();

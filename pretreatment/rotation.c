@@ -5,17 +5,25 @@
 #include "pixel_operations.h"
 #include <math.h>
 
-SDL_Surface* rotation(SDL_Surface* image,int de)
+SDL_Surface* rotation(SDL_Surface* image,int de,int boo)
 {
   if(de>180)
     de = de - 180;
   double deg = de*0.0174533;
   int width = image -> w;
   int height = image -> h;
-  
-  int Rwidth = sqrt(width*width+height*height );
-int Rheight = sqrt(width*width+height*height );//- 2*(width*height*sin(deg)
-  
+  int Rwidth = 0;
+  int Rheight = 0;
+  if(boo == 0)
+    {
+      Rwidth = sqrt(width*width+height*height);
+      Rheight = sqrt(width*width+height*height);//- 2*(width*height*sin(deg)
+    }
+  else
+    {
+      Rwidth = width;
+      Rheight = height;
+    }
   SDL_Surface *rotatedimage;
   rotatedimage = SDL_CreateRGBSurface(0,Rwidth,Rheight,32,0,0,0,0);
   

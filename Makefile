@@ -9,8 +9,8 @@ LDLIBS= `pkg-config --libs sdl gtk+-3.0` -lSDL_image -lm -ldl
 
 all: gui
 
-gui: gui.o Tools/tools.o segmentation/histogram.o pretreatment/binari.o pretreatment/grayscale.o pretreatment/contrast.o pretreatment/noise.o NeuralNetwork/NN_xor.o segmentation2/segmentation.o 
-gui.o : Tools/tools.h segmentation/histogram.h pretreatment/binari.h pretreatment/grayscale.h pretreatment/contrast.h pretreatment/noise.h NeuralNetwork/NN_xor.h segmentation2/segmentation.h 
+gui: gui.o Tools/tools.o segmentation/histogram.o pretreatment/binari.o pretreatment/grayscale.o pretreatment/contrast.o pretreatment/noise.o NeuralNetwork/NN_xor.o segmentation2/segmentation.o pretreatment/rotation.o
+gui.o : Tools/tools.h segmentation/histogram.h pretreatment/binari.h pretreatment/grayscale.h pretreatment/contrast.h pretreatment/noise.h NeuralNetwork/NN_xor.h segmentation2/segmentation.h pretreatment/rotation.h
 
 
 
