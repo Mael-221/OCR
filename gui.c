@@ -52,7 +52,7 @@ int rota = 0;
 void on_display_b_clicked()
 {
   printf("display \n");
-  screen = display_image(image);
+  screen = display_image(debug);
   is_image_display = 1;
 }
 
@@ -66,7 +66,7 @@ void on_grayscale_b_clicked()
   }
   if(is_image_display == 1)
   {
-    update_surface(screen,image);
+    update_surface(screen,debug);
   }
 }
 
@@ -80,7 +80,7 @@ void on_binarisation_b_clicked ()
   }
   if(is_image_display == 1)
   {
-    update_surface(screen,image);
+    update_surface(screen,debug);
   }
 }
 
@@ -94,7 +94,7 @@ void on_segmentation_b_clicked ()
   }
   if(is_image_display == 1)
   {
-    update_surface(screen,image);
+    update_surface(screen,debug);
   }
 }
 
@@ -109,7 +109,7 @@ void on_noise_b_clicked ()
   }
   if(is_image_display == 1)
   {
-    update_surface(screen,image);
+    update_surface(screen,debug);
   }
 }
 
@@ -125,7 +125,7 @@ void on_rotate_b_clicked ()
   }
   if(is_image_display == 1)
   {
-    screen = display_image(image);
+    screen = display_image(debug);
   }
 }
 
@@ -140,7 +140,7 @@ void on_contrast_up_b_clicked ()
   }
   if(is_image_display == 1)
   {
-    update_surface(screen,image);
+    update_surface(screen,debug);
   }
 }
 
@@ -151,11 +151,11 @@ void on_contrast_down_b_clicked ()
   if(is_file_load == 1)
   {
     contrast(image,0.3333);
-    contrast(image,0.3333);
+    contrast(debug,0.3333);
   }
   if(is_image_display == 1)
   {
-    update_surface(screen,image);
+    update_surface(screen,debug);
   }
 }
 
