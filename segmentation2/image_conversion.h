@@ -1,5 +1,5 @@
-#ifndef SEGMENTATION_H
-#define SEGMENTATION_H
+#ifndef IMAGE_CONVERSION_H
+#define IMAGE_CONVERSION_H
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -14,7 +14,6 @@ struct image_matrix
   size_t h;
 };
 
-void line_cut(SDL_Surface* image);
-void column_cut(SDL_Surface* image, int first_line, int end_line);
+int* image_conversion(SDL_Surface* image);
 
 #endif

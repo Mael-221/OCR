@@ -7,7 +7,7 @@
 #include "pretreatment/noise.h"
 #include "pretreatment/rotation.h"
 #include <string.h>
-#include "segmentation2/segmentation.h"
+#include "segmentation2/image_conversion.h"
 #include "NeuralNetwork/NN_xor.h"
 #include <unistd.h>
 #include <gtk/gtk.h>
