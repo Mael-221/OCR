@@ -11,7 +11,7 @@ int* image_conversion(SDL_Surface* image)
   //register the width of the image
   int h = image -> h;
   //register the height of the image
-  int* array = [784];
+  static int array[784];
   size_t k = 0;
 
   for (int i = 0; i < h; i++) //through lines
