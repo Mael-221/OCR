@@ -90,7 +90,7 @@ void on_binarisation_b_clicked ()
 
 void on_segmentation_b_clicked ()
 {
-  
+  static char array[img->LetterNumbers];
   if(is_file_load == 1)
   {
     //printf("segmentation \n");
@@ -101,25 +101,26 @@ void on_segmentation_b_clicked ()
       switch (img->Letters[i].state)
       {
       case character:
-        /* code */
+        array[i] = list_to_char(net, image_conversion(Letters[i].image));
         break;
       case space:
-        /* code */
+        array[i] = ' ';
         break;
       case linebreak:
-        /* code */
+        array[i] =  '\n';
         break;
       
       default:
         break;
       }
-
+      printf("%s", array);
     }
   }
   if(is_image_display == 1)
   {
     update_surface(screen,debug);
   }
+  return array;
 }
 
 void on_noise_b_clicked ()
