@@ -130,7 +130,7 @@ struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug, int registerI
 
     img->image = image; // Set image reference in struct
 
-    SDL_Surface** Letters = img->Letters;
+    Ichar* Letters = img->Letters;
 
     //Variables to segment the text in lines.
     VHistogram* lineHist = createVHistogram(img);
@@ -156,14 +156,33 @@ struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug, int registerI
             //int newW = let.BottomX - let.TopX;
 
             //g_print("W:%d H:%d\n",newW,newH);
-
-            reduceBlank(image, &let);
-            
-            SDL_Surface* img = Reduce(image, &let);
-
-            binari(img);
-
             /**
+            switch (columns[j].state)
+            {
+            case character:
+                g_print("x");
+                break;
+            case linebreak:
+                g_print("/");
+                break;
+
+            case space:
+                g_print("_");
+                break;
+            
+            default:
+                break;
+            }**/
+
+            if (columns[j].state == character)
+            {
+                reduceBlank(image, &let);
+            
+                SDL_Surface* img = Reduce(image, &let);
+
+                binari(img);
+
+                /**
             newH = let.BottomY - let.TopY;
             newW = let.BottomX - let.TopX;
 
@@ -178,26 +197,26 @@ struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug, int registerI
             }
             **/
 
-            if (registerImage == 1)
-            {
-                char buf[128];
-                int i = 0;
+                if (registerImage == 1)
+                {
+                    char buf[128];
+                    int i = 0;
 
-                if (LetterCount + 65 <= 90)
-                {
-                    i = 65;
-                }
-                else
-                {
-                    i = 71;
-                }
+                    if (LetterCount + 65 <= 90)
+                    {
+                        i = 65;
+                    }
+                    else
+                    {
+                        i = 71;
+                    }
         
-                snprintf(buf, 128, "data/%c.png", (char) (i + LetterCount));
+                    snprintf(buf, 128, "data/%c.png", (char) (i + LetterCount));
 
-                //g_print("W:%d\nH:%d\n", img->w, img->h);
+                    //g_print("W:%d\nH:%d\n", img->w, img->h);
 
 
-                /**
+                    /**
                 for (int i = 0; i < img->w; i++)
                 {
                     for (int j = 0; j < img->h; j++)
@@ -207,19 +226,48 @@ struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug, int registerI
                 }
                 **/
 
-                SDL_SaveBMP(img,buf);
-            }
+                    SDL_SaveBMP(img,buf);
+                }
             
-            Letters[LetterCount] = img;
+                Ichar ch = {
+                    img,
+                    character
+                };
+
+            Letters[LetterCount] = ch;
 
             //g_print("W:%d H:%d\n",let.BottomX - let.TopX,let.BottomY - let.TopY);
             LetterCount++;
+            }
+            else
+            {
+                if (columns[j].state == space)
+                {
+                    Ichar ch = {
+                        NULL,
+                        space
+                    };
+
+                    Letters[LetterCount] = ch;
+                }
+                else
+                {
+                    Ichar ch = {
+                        NULL,
+                        linebreak
+                    };
+
+                    Letters[LetterCount] = ch;
+                }
+            }
+            
+
         }
         
     }
     
     img->image = image;
-    img->lineNumbers = numberOfLines;
+    img->LetterNumbers = LetterCount;
 
     return img;
 }
@@ -383,6 +431,9 @@ column *divideInLetter(Iimage* img, line li,int* nb, SDL_Surface* Dbg)
     int c = 0;
 
     int columnNumber = 0;
+    int letterNumber = 0;
+    int sum = 0;
+    float moy = 0;
 
     while (c < image->w)
     {
@@ -392,17 +443,46 @@ column *divideInLetter(Iimage* img, line li,int* nb, SDL_Surface* Dbg)
         if (hist->hist[c] != 0)
         {
             hist->elementNumber++;
-            column l = {c,c+taille-1};
+            column l = {c,c+taille-1,character};
             columns[columnNumber] = l;
             columnNumber++;
+            letterNumber++;
+            sum += taille;
+            moy = (float) sum / (float) letterNumber;
         }
-        
+
+        if (hist->hist[c] == 0 && c != 0)
+        {
+            if (taille > (moy) * ((float) 3 / (float) 4))
+            {
+                //g_print("Taille: %d, Limit:%f\n",taille, (moy) * ((float) 3 / (float) 4));
+
+                if (c + taille == image->w)
+                {
+                    //g_print("end\n");
+
+                    column l = {0,0,linebreak};
+                    columns[columnNumber] = l;
+                    //g_print("/");
+                }
+                else
+                {
+                    column l = {0,0,space};
+                    columns[columnNumber] = l;
+                    //g_print("_");
+                }
+
+                columnNumber++;
+
+            }
+        }
+
         c += taille;
     }
 
     if (Dbg)
     {
-        for (int i = 0; i < hist->elementNumber; i++)
+        for (int i = 0; i < columnNumber; i++)
         {
             //Draw debug lines for a clear representation
 
@@ -441,6 +521,7 @@ int NumberOfLines(VHistogram* histogram,int h)
         {
             linenumbers++;
         }
+        
         c += taille;
 
     }
@@ -453,13 +534,29 @@ int NumberOfColumns(HHistogram* histogram,int w)
 
     int columnNumber = 0;
 
+    int letterNumber = 0;
+    int sum = 0;
+    float moy = 0;
+
     while (c < w)
     {
         int taille = columnSize(histogram, c, w,0);
         if (histogram->hist[c] != 0)
         {
             columnNumber++;
+            letterNumber++;
+            sum += taille;
+            moy = (float) sum / (float) letterNumber;
         }
+
+        if (histogram->hist[c] == 0 && c != 0)
+        {
+            if (taille > (moy) * ((float) 3 / (float) 4))
+            {
+                columnNumber++;
+            }
+        }
+
         c += taille;
 
     }

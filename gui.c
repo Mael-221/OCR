@@ -94,7 +94,27 @@ void on_segmentation_b_clicked ()
   if(is_file_load == 1)
   {
     //printf("segmentation \n");
-    createImage(image,debug,0);
+    Iimage* img = createImage(image,debug,0);
+
+    for (int i = 0; i < img->LetterNumbers; i++)
+    {
+      switch (img->Letters[i].state)
+      {
+      case character:
+        /* code */
+        break;
+      case space:
+        /* code */
+        break;
+      case linebreak:
+        /* code */
+        break;
+      
+      default:
+        break;
+      }
+
+    }
   }
   if(is_image_display == 1)
   {

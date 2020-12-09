@@ -5,6 +5,14 @@
 #include <SDL_image.h>
 #include <gtk/gtk.h>
 
+typedef enum charState charState; 
+enum charState
+{
+    character,
+    space,
+    linebreak
+};
+
 /*
 Histogram structure for VERTICAL image treatment
 imgHeight : image height in pixel
@@ -65,6 +73,7 @@ struct column
 {
     int start;
     int end;
+    charState state;
 };
 
 /*
@@ -87,18 +96,26 @@ struct Letter
     int Line;
 };
 
+
+typedef struct Ichar Ichar; 
+struct Ichar
+{
+    SDL_Surface* image;
+
+    charState state;
+};
+
 typedef struct Iimage Iimage; 
 struct Iimage
 {
     SDL_Surface* image;
 
-    int lineNumbers;
+    int LetterNumbers;
 
     int color;
 
-    SDL_Surface* Letters[10000];
+    Ichar Letters[10000];
 };
-
 
 /*
 Return the least present color in the image.
