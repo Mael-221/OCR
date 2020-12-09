@@ -9,7 +9,7 @@ struct Neural_Network* InitializeNetwork()
   net -> nbInput = 28*28;
   net -> nbHidden = 20;
   net -> nbOutput = 52;
-  net->lr=0.2;
+  net->lr=0.1;
   net->ErrorRate=0.0;
 
   //Set Values
@@ -59,18 +59,24 @@ void ForwardPass(struct Neural_Network *net)
 
 
       //Calculate Output for Output neurons
+  double Sumexp=0.0;
   for (int o = 0; o < net -> nbOutput; o++)
   {
     double Sum_O = 0.0;
     for (int h = 0; h < net -> nbHidden; h++)
     {
         Sum_O+=  net -> WeightsHO[h][o]* net -> Hidden[h];
-
     
     }
     
-    net -> Outputs[o] = sigmoid(Sum_O +  net-> BiasO[o]);
+    net -> Outputs[o] = (Sum_O +  net-> BiasO[o]);
+    Sumexp+=exp( net->Outputs[o]);
   }
+  for (int o = 0; o < net -> nbOutput; o++)
+  {
+    net -> Outputs[o] = exp(net -> Outputs[o])/Sumexp; 
+  }
+
 
 
 }
@@ -81,7 +87,7 @@ void BackwardPass(struct Neural_Network *net)
     for(int o=0;o<net->nbOutput;o++)
     {
         double dError=net->Goals[o]-net->Outputs[o];
-        (*net).dOutput[o]=dError*derivative_sigmoid((*net).Outputs[o]);
+        (*net).dOutput[o]=dError;
 
     }
 
@@ -131,10 +137,12 @@ void PrintState(struct Neural_Network *net)
 {
   //Squared error function
   SquaredError(net);
-  printf("\n Output=[ ");
-  for(int k=0; k<net->nbOutput;k++)
+ for(int k=0; k<net->nbHidden;k++)
+     printf("%f ",net->WeightsIH[0][k]);
+  printf("\n Hidden=[ ");
+  for(int k=0; k<net->nbHidden;k++)
   {
-      printf("%f, ",net->Outputs[k]);
+      printf("%f, ",net->Hidden[k]);
   }
   printf("]\n");
 
@@ -196,15 +204,15 @@ void Train_Neural_Network(struct Neural_Network *net)
     int epoch=10000;
     double **goals=goalMatrix();
     
-    //double **inputs1=lettersMatrix('1');
-   // double **inputs2=lettersMatrix('2');
-    //double **inputs3=lettersMatrix('3');
+    double **inputs1=lettersMatrix('1');
+   double **inputs2=lettersMatrix('2');
+    double **inputs3=lettersMatrix('3');
     double **inputs4=lettersMatrix('4');
-   // double **inputs;
+    double **inputs;
 
     for(int i=0;i<=epoch;i++)
     {
-        /*for(int k=0;k<4;k++)
+        for(int k=0;k<4;k++)
         {
             switch (k)
             {
@@ -225,14 +233,14 @@ void Train_Neural_Network(struct Neural_Network *net)
                         break;
 
 
-            }
-*/
+     }
+
             for(int j=0;j<52;j++)
             {
                 
-                OCR_Neural_Network(net,inputs4[j],goals[j]);
+                OCR_Neural_Network(net,inputs[j],goals[j]);
 
-                if(i%1000==0)
+                if(i%1000==0 || i==1)
                 {
                     
                     PrintState(net);
@@ -241,10 +249,10 @@ void Train_Neural_Network(struct Neural_Network *net)
 
             }
                     
-      //  }
+        }
 
     }
-    //save(net);
+    save(net);
 
     
 }

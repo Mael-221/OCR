@@ -170,6 +170,18 @@
             <property name="y">98</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkEntry" id="create_data_set">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="placeholder-text" translatable="yes">data ID...</property>
+            <signal name="changed" handler="on_create_data_set_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">15</property>
+            <property name="y">199</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>

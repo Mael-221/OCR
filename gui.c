@@ -22,7 +22,7 @@
 
 //Make them Global
 
-struct Neural_Network* net = load();
+
 GtkWidget *window;
 GtkWidget *fixed1;
 GtkWidget *grayscale_b;
@@ -34,6 +34,7 @@ GtkWidget *contrast_up_b;
 GtkWidget *contrast_down_b;
 GtkWidget *choose_file;
 GtkWidget *rotation_level;
+GtkWidget *create_data_set_b;
 GtkWidget *display_b;
 GtkBuilder *builder;
 GtkWidget *launch_OCR;
@@ -45,6 +46,7 @@ SDL_Surface *debug;
 int is_file_load = 0;
 int is_image_display = 0;
 int rota = 0;
+int data_ID = 0;
 
 //begin SDL
 
@@ -91,18 +93,20 @@ void on_binarisation_b_clicked ()
 
 char *on_segmentation_b_clicked ()
 {
-  static char array[img->LetterNumbers];
+  
   if(is_file_load == 1)
   {
     //printf("segmentation \n");
+    struct Neural_Network *net=load();
     Iimage* img = createImage(image,debug,0);
+    char array[img->LetterNumbers];
 
     for (int i = 0; i < img->LetterNumbers; i++)
     {
       switch (img->Letters[i].state)
       {
       case character:
-        array[i] = list_to_char(net, image_conversion(Letters[i].image));
+        array[i] = list_to_char(net, image_conversion(img->Letters[i].image));
         break;
       case space:
         array[i] = ' ';
@@ -121,7 +125,7 @@ char *on_segmentation_b_clicked ()
   {
     update_surface(screen,debug);
   }
-  return array;
+  
 }
 
 void on_noise_b_clicked ()
@@ -191,6 +195,13 @@ void on_rotation_level_changed(GtkEntry *e)
   rotationlevel = atoi(gtk_entry_get_text(e));
 }
 
+void on_create_data_set_changed(GtkEntry *e)
+{
+  data_ID = atoi(gtk_entry_get_text(e));
+  createImage(image,debug,data_ID);
+  update_surface(screen,debug);
+}
+
 void on_choose_file_file_set(GtkFileChooserButton *f)
 {
   //printf("file name = %s \n",gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(f)));
@@ -213,6 +224,9 @@ void on_training_neural_net_b_clicked()
 void on_launch_OCR_b_clicked ()
 {
   printf("launched OCR \n");
+  on_grayscale_b_clicked();
+  on_binarisation_b_clicked();
+  on_segmentation_b_clicked();
 }
 //end GTK
 
@@ -243,6 +257,7 @@ int main ()
   display_b = GTK_WIDGET(gtk_builder_get_object(builder,"display_b"));
   launch_OCR = GTK_WIDGET(gtk_builder_get_object(builder,"launch_OCR_b"));
   train_net = GTK_WIDGET(gtk_builder_get_object(builder,"training_neural_net_b"));
+  create_data_set_b = GTK_WIDGET(gtk_builder_get_object(builder,"create_data_set"));
 
   g_signal_connect(grayscale_b,"clicked",G_CALLBACK(on_grayscale_b_clicked),NULL);
   g_signal_connect(binarisation_b,"clicked",G_CALLBACK(on_binarisation_b_clicked),NULL);
@@ -252,6 +267,7 @@ int main ()
   g_signal_connect(contrast_up_b,"clicked",G_CALLBACK(on_contrast_up_b_clicked),NULL);
   g_signal_connect(contrast_down_b,"clicked",G_CALLBACK(on_contrast_down_b_clicked),NULL);
   g_signal_connect(rotation_level,"activate",G_CALLBACK(on_rotation_level_changed),rotation_level);
+  g_signal_connect(create_data_set_b,"activate",G_CALLBACK(on_create_data_set_changed),create_data_set_b);
   g_signal_connect(choose_file,"file-set",G_CALLBACK(on_choose_file_file_set),choose_file);
   g_signal_connect(display_b,"clicked",G_CALLBACK(on_display_b_clicked),NULL);
   g_signal_connect(launch_OCR,"clicked",G_CALLBACK(on_launch_OCR_b_clicked),NULL);

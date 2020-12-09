@@ -197,7 +197,7 @@ struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug, int registerI
             }
             **/
 
-                if (registerImage == 1)
+                if (registerImage > 0)
                 {
                     char buf[128];
                     int i = 0;
@@ -205,28 +205,42 @@ struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug, int registerI
                     if (LetterCount + 65 <= 90)
                     {
                         i = 65;
+                        snprintf(buf, 128, "NeuralNetwork/majs/%c/%c%d.txt", (char) (i + LetterCount),(char) (i + LetterCount),registerImage);
                     }
                     else
                     {
-                        i = 71;
+                        i = 70;
+                        snprintf(buf, 128, "NeuralNetwork/mins/%c/%c%d.txt", (char) (i + LetterCount),(char) (i + LetterCount),registerImage);
                     }
-        
-                    snprintf(buf, 128, "data/%c.png", (char) (i + LetterCount));
 
                     //g_print("W:%d\nH:%d\n", img->w, img->h);
 
+                    FILE *file = fopen(buf,"w");
 
-                    /**
-                for (int i = 0; i < img->w; i++)
-                {
-                    for (int j = 0; j < img->h; j++)
+                    for (int i = 0; i < img->w; i++)
                     {
-                        g_print("%d\n",getPixelColor(img,getpixelval(img,i,j)));
-                    }
-                }
-                **/
+                        for (int j = 0; j < img->h; j++)
+                        {
+                            //g_print("%d\n",getPixelColor(img,getpixelval(img,i,j)));
 
-                    SDL_SaveBMP(img,buf);
+                            if (getpixelval(img,j,i) == 0)
+                            {
+                                fprintf(file,"%c",'1');
+                                //g_print("%c",'0');
+                            }
+                            else
+                            {
+                                fprintf(file,"%c",'0');
+                                //g_print("%c",'1');
+                            }
+
+                            
+                        }
+                        fprintf(file,"\n");
+                    }
+
+                    fclose(file);
+                    
                 }
             
                 Ichar ch = {
@@ -263,7 +277,6 @@ struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug, int registerI
                 LetterCount++;
             }
             
-
         }
         
     }

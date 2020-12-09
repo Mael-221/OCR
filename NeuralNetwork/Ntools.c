@@ -1,4 +1,4 @@
-#include "tools.h"
+#include "Ntools.h"
 
 double sigmoid(double x)
 {
@@ -10,7 +10,7 @@ double derivative_sigmoid(double x)
 }
 double Random()
 {
-    return ((double)rand()) / ((double)RAND_MAX);
+    return ((double)rand()) / ((double)RAND_MAX)/10;
 }
 
 void print_matrix(double mat[], size_t lines, size_t cols)
