@@ -172,8 +172,8 @@ struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug, int registerI
             
             default:
                 break;
-            }**/
-
+            }
+            **/
             if (columns[j].state == character)
             {
                 reduceBlank(image, &let);
@@ -234,11 +234,12 @@ struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug, int registerI
                     character
                 };
 
-            Letters[LetterCount] = ch;
+                Letters[LetterCount] = ch;
 
-            //g_print("W:%d H:%d\n",let.BottomX - let.TopX,let.BottomY - let.TopY);
-            LetterCount++;
+                //g_print("W:%d H:%d\n",let.BottomX - let.TopX,let.BottomY - let.TopY);
+                LetterCount++;
             }
+
             else
             {
                 if (columns[j].state == space)
@@ -259,6 +260,7 @@ struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug, int registerI
 
                     Letters[LetterCount] = ch;
                 }
+                LetterCount++;
             }
             
 
