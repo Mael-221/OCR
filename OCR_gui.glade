@@ -144,6 +144,32 @@
             <property name="y">165</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkButton" id="launch_OCR_b">
+            <property name="label" translatable="yes">launch OCR</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <signal name="clicked" handler="on_launch_OCR_b_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">313</property>
+            <property name="y">30</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="training_neural_net_b">
+            <property name="label" translatable="yes">train neural network</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <signal name="clicked" handler="on_training_neural_net_b_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">274</property>
+            <property name="y">98</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>

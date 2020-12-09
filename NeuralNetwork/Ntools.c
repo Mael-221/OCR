@@ -265,7 +265,7 @@ int Goal_Pos(double *goal)
 //Retrive char from value val
 char Get_Char(int val)
 {
-  char c;
+  char c = 0;
 
   if(val <= 25)
   {

@@ -8,7 +8,7 @@
 #include "pretreatment/rotation.h"
 #include <string.h>
 #include "segmentation2/image_conversion.h"
-#include "NeuralNetwork/NN_xor.h"
+//#include "NeuralNetwork/NN_xor.h"
 #include <unistd.h>
 #include <gtk/gtk.h>
 #include <math.h>
@@ -17,6 +17,8 @@
 #include <SDL/SDL_image.h>
 #include <glib-object.h>
 #include <gobject/gvaluecollector.h>
+#include "NeuralNetwork/Ntools.h"
+#include "NeuralNetwork/neural_network.h"
 
 //Make them Global
 
@@ -33,6 +35,8 @@ GtkWidget *choose_file;
 GtkWidget *rotation_level;
 GtkWidget *display_b;
 GtkBuilder *builder;
+GtkWidget *launch_OCR;
+GtkWidget *train_net;
 int rotationlevel = 0;
 SDL_Surface *image;
 SDL_Surface *screen;
@@ -174,6 +178,20 @@ void on_choose_file_file_set(GtkFileChooserButton *f)
   rota = 0;
   
 }
+
+void on_training_neural_net_b_clicked()
+{
+  printf("training neural network \n");
+  struct Neural_Network *net=load();
+  //struct Neural_Network *net = InitializeNetwork();
+  Train_Neural_Network(net);
+  
+}
+
+void on_launch_OCR_b_clicked ()
+{
+  printf("launched OCR \n");
+}
 //end GTK
 
 int main ()
@@ -201,6 +219,8 @@ int main ()
   choose_file = GTK_WIDGET(gtk_builder_get_object(builder,"choose_file"));
   rotation_level = GTK_WIDGET(gtk_builder_get_object(builder,"rotation_level"));
   display_b = GTK_WIDGET(gtk_builder_get_object(builder,"display_b"));
+  launch_OCR = GTK_WIDGET(gtk_builder_get_object(builder,"launch_OCR_b"));
+  train_net = GTK_WIDGET(gtk_builder_get_object(builder,"training_neural_net_b"));
 
   g_signal_connect(grayscale_b,"clicked",G_CALLBACK(on_grayscale_b_clicked),NULL);
   g_signal_connect(binarisation_b,"clicked",G_CALLBACK(on_binarisation_b_clicked),NULL);
@@ -212,6 +232,9 @@ int main ()
   g_signal_connect(rotation_level,"activate",G_CALLBACK(on_rotation_level_changed),rotation_level);
   g_signal_connect(choose_file,"file-set",G_CALLBACK(on_choose_file_file_set),choose_file);
   g_signal_connect(display_b,"clicked",G_CALLBACK(on_display_b_clicked),NULL);
+  g_signal_connect(launch_OCR,"clicked",G_CALLBACK(on_launch_OCR_b_clicked),NULL);
+  g_signal_connect(train_net,"clicked",G_CALLBACK(on_training_neural_net_b_clicked),NULL);
+  
   
   gtk_widget_show(window);
 
