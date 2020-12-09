@@ -1,7 +1,7 @@
 #include "../Tools/tools.h"
 #include "image_conversion.h"
 
-int* image_conversion(SDL_Surface* image)
+double* image_conversion(SDL_Surface* image)
 {
   Uint8 r, g, b;
   //signed numbers from 0 to 250, to register the rgb
@@ -11,7 +11,7 @@ int* image_conversion(SDL_Surface* image)
   //register the width of the image
   int h = image -> h;
   //register the height of the image
-  static int array[784];
+  static double array[784];
   size_t k = 0;
 
   for (int i = 0; i < h; i++) //through lines

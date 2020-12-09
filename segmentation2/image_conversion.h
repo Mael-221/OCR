@@ -14,6 +14,6 @@ struct image_matrix
   size_t h;
 };
 
-int* image_conversion(SDL_Surface* image);
+double* image_conversion(SDL_Surface* image);
 
 #endif
