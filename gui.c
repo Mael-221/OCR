@@ -89,7 +89,7 @@ void on_binarisation_b_clicked ()
   }
 }
 
-void on_segmentation_b_clicked ()
+char *on_segmentation_b_clicked ()
 {
   static char array[img->LetterNumbers];
   if(is_file_load == 1)
