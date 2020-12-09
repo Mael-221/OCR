@@ -26,6 +26,10 @@ int* image_conversion(SDL_Surface* image)
 	    {
 	      array[k] = 1;
 	    }
+	  else
+	    {
+	      array[k] = 0;
+	    }
 	  k += 1;
 	}
     }
