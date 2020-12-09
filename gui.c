@@ -22,6 +22,7 @@
 
 //Make them Global
 
+struct Neural_Network* net = load();
 GtkWidget *window;
 GtkWidget *fixed1;
 GtkWidget *grayscale_b;
