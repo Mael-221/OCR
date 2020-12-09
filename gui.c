@@ -18,7 +18,6 @@
 #include <glib-object.h>
 #include <gobject/gvaluecollector.h>
 
-
 //Make them Global
 
 GtkWidget *window;
@@ -44,7 +43,6 @@ int rota = 0;
 
 //begin SDL
 
-
 //end SDL
 
 //Begin GTK
@@ -58,9 +56,10 @@ void on_display_b_clicked()
 
 void on_grayscale_b_clicked()
 {
-  printf("grascale \n");
+  
   if(is_file_load == 1)
   {
+    //printf("grascale \n");
     grayscale(image);
     grayscale(debug);
   }
@@ -72,9 +71,10 @@ void on_grayscale_b_clicked()
 
 void on_binarisation_b_clicked ()
 {
-  printf("binari \n");
+  
   if(is_file_load == 1)
   {
+    //printf("binari \n");
     binari(image);
     binari(debug);
   }
@@ -89,7 +89,7 @@ void on_segmentation_b_clicked ()
   
   if(is_file_load == 1)
   {
-    printf("segmentation \n");
+    //printf("segmentation \n");
     createImage(image,debug);
   }
   if(is_image_display == 1)
@@ -100,7 +100,7 @@ void on_segmentation_b_clicked ()
 
 void on_noise_b_clicked ()
 {
-  printf("noise \n");
+  //printf("noise \n");
   
   if(is_file_load == 1)
   {
@@ -115,7 +115,7 @@ void on_noise_b_clicked ()
 
 void on_rotate_b_clicked ()
 {
-  printf("rotation of %i \n",rotationlevel);
+  //printf("rotation of %i \n",rotationlevel);
   if(is_file_load == 1)
   {
     
@@ -131,7 +131,7 @@ void on_rotate_b_clicked ()
 
 void on_contrast_up_b_clicked ()
 {
-  printf("contrast up \n");
+  //printf("contrast up \n");
   
   if(is_file_load == 1)
   {
@@ -146,7 +146,7 @@ void on_contrast_up_b_clicked ()
 
 void on_contrast_down_b_clicked ()
 {
-  printf("contrast down \n");
+  //printf("contrast down \n");
   
   if(is_file_load == 1)
   {
@@ -167,14 +167,14 @@ void on_rotation_level_changed(GtkEntry *e)
 
 void on_choose_file_file_set(GtkFileChooserButton *f)
 {
-  printf("file name = %s \n",gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(f)));
+  //printf("file name = %s \n",gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(f)));
   image = load_image(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(f)));
   debug = load_image(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(f)));
   is_file_load = 1;
+  rota = 0;
+  
 }
 //end GTK
-
-
 
 int main ()
 {
