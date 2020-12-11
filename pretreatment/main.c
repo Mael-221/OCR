@@ -100,7 +100,7 @@ int main()
   wait_for_keypressed();
 
   
-  image = rotation(image,45);
+  image = rotation(image,45,0);
   screen = display_image(image);
   wait_for_keypressed();
 
