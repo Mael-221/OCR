@@ -139,10 +139,10 @@ void PrintState(struct Neural_Network *net)
   SquaredError(net);
  for(int k=0; k<net->nbHidden;k++)
      printf("%f ",net->WeightsIH[0][k]);
-  printf("\n Hidden=[ ");
-  for(int k=0; k<net->nbHidden;k++)
+  printf("\n Outputs=[ ");
+  for(int k=0; k<net->nbOutput;k++)
   {
-      printf("%f, ",net->Hidden[k]);
+      printf("%f, ",net->Outputs[k]);
   }
   printf("]\n");
 
@@ -204,15 +204,17 @@ void Train_Neural_Network(struct Neural_Network *net)
     int epoch=10000;
     double **goals=goalMatrix();
     
-    double **inputs1=lettersMatrix('1');
-   double **inputs2=lettersMatrix('2');
-    double **inputs3=lettersMatrix('3');
-    double **inputs4=lettersMatrix('4');
-    double **inputs;
+    //double **inputs1=lettersMatrix('1');
+  // double **inputs2=lettersMatrix('2');
+    //double **inputs3=lettersMatrix('3');
+   // double **inputs4=lettersMatrix('4');
+     double **inputs5=lettersMatrix('5');
+
+    //double **inputs;
 
     for(int i=0;i<=epoch;i++)
     {
-        for(int k=0;k<4;k++)
+        /*for(int k=0;k<4;k++)
         {
             switch (k)
             {
@@ -233,12 +235,12 @@ void Train_Neural_Network(struct Neural_Network *net)
                         break;
 
 
-     }
+     }*/
 
             for(int j=0;j<52;j++)
             {
                 
-                OCR_Neural_Network(net,inputs[j],goals[j]);
+                OCR_Neural_Network(net,inputs5[j],goals[j]);
 
                 if(i%1000==0 || i==1)
                 {
@@ -249,7 +251,7 @@ void Train_Neural_Network(struct Neural_Network *net)
 
             }
                     
-        }
+      //  }
 
     }
     save(net);

@@ -106,7 +106,7 @@ double **lettersMatrix(char count)
     }
     else if(i >= 26)
     {
-      if(count>3)
+      if(count==4)
           count ='3';
       mins_path[5] = min;
       mins_path[7] = min;
@@ -265,7 +265,7 @@ int Goal_Pos(double *goal)
 //Retrive char from value val
 char Get_Char(int val)
 {
-  char c = 0;
+  char c=0;
 
   if(val <= 25)
   {
