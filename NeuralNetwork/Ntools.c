@@ -10,7 +10,7 @@ double derivative_sigmoid(double x)
 }
 double Random()
 {
-    return ((double)rand()) / ((double)RAND_MAX);
+    return ((double)rand()) / ((double)RAND_MAX)/10;
 }
 
 void print_matrix(double mat[], size_t lines, size_t cols)
@@ -265,7 +265,7 @@ int Goal_Pos(double *goal)
 //Retrive char from value val
 char Get_Char(int val)
 {
-  char c = 0;
+  char c;
 
   if(val <= 25)
   {
