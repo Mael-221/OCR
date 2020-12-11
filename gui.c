@@ -90,7 +90,7 @@ void on_segmentation_b_clicked ()
   if(is_file_load == 1)
   {
     //printf("segmentation \n");
-    createImage(image,debug);
+    createImage(image,debug,0);
   }
   if(is_image_display == 1)
   {
