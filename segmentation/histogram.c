@@ -1,10 +1,14 @@
 #include "histogram.h"
 #include "../Tools/tools.h"
+#include "../pretreatment/binari.h"
 #include <stdio.h>
 
 //Return 0 for majority of White pixels and 1 for majority of Black pixels
-int getFontColor(SDL_Surface* image)
+int getFontColor(Iimage* img)
 {
+    //
+    SDL_Surface* image = img->image;
+
     int whitePixel = 0;
     int blackPixel = 0;
 
@@ -53,8 +57,10 @@ int getPixelColor(SDL_Surface* image, Uint32 pixel)
     }
 }
 
-struct VHistogram* createVHistogram(SDL_Surface* image)
+struct VHistogram* createVHistogram(Iimage* img)
 {
+    SDL_Surface* image = img->image;
+
     //allocate memory for the array in the struct.
     struct VHistogram *hist = malloc(sizeof(*hist) + sizeof(int[image->h]));
 
@@ -63,7 +69,8 @@ struct VHistogram* createVHistogram(SDL_Surface* image)
     hist->elementNumber = 0;
 
     //Get the color of text (0 for black and 1 for white)
-    int color = getFontColor(image);
+    img->color = getFontColor(img);
+    int color = img->color;
 
     for (int i = 0; i < image->h; i++)
     {
@@ -84,8 +91,10 @@ struct VHistogram* createVHistogram(SDL_Surface* image)
     return hist;
 }
 
-struct HHistogram* createHHistogram(SDL_Surface* image, line li)
+struct HHistogram* createHHistogram(Iimage* img, line li)
 {
+    SDL_Surface* image = img->image;
+
     //allocate memory for the array in the struct.
     struct HHistogram *hist = malloc(sizeof(*hist) + sizeof(int[image->w]));
 
@@ -93,7 +102,7 @@ struct HHistogram* createHHistogram(SDL_Surface* image, line li)
 
     hist->elementNumber = 0;
 
-    int color = getFontColor(image);
+    int color = img->color;
 
     for (int i = 0; i < image->w; i++)
     {
@@ -115,36 +124,202 @@ struct HHistogram* createHHistogram(SDL_Surface* image, line li)
 }
 
 //Complete segmentation
-struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug)
+struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug, int registerImage)
 {
+    Iimage* img = malloc(sizeof(Iimage));
+
+    img->image = image; // Set image reference in struct
+
+    SDL_Surface** Letters = img->Letters;
+
     //Variables to segment the text in lines.
-    VHistogram* lineHist = createVHistogram(image);
+    VHistogram* lineHist = createVHistogram(img);
     int numberOfLines = NumberOfLines(lineHist, image->h);
 
     line* lines = divideInLines(image,numberOfLines,lineHist,debug);
 
-    //Allocate memory for the letters struct stored to feed neural network.
-    Letter* letters = malloc(sizeof(Letter*));
 
+    int LetterCount = 0;
     for (int i = 0; i < numberOfLines; i++)
     {
+        
         int nbColumns = 0;
-        column* columns = divideInLetter(image,lines[i],&nbColumns,debug);
+        column* columns = divideInLetter(img,lines[i],&nbColumns,debug);
 
         lines[i].columnsNB = nbColumns;
-        fixGroups(image, lines[i], columns,debug);
 
-        //letters = mergeLetters(letters, temp);
+        for (int j = 0; j < lines[i].columnsNB; j++)
+        {
+            Letter let = {columns[j].start, lines[i].start, columns[j].end, lines[i].end,i};
+            
+            //int newH = let.BottomY - let.TopY;
+            //int newW = let.BottomX - let.TopX;
 
+            //g_print("W:%d H:%d\n",newW,newH);
+
+            reduceBlank(image, &let);
+            
+            SDL_Surface* img = Reduce(image, &let);
+
+            binari(img);
+
+            /**
+            newH = let.BottomY - let.TopY;
+            newW = let.BottomX - let.TopX;
+
+            SDL_Surface* img = SDL_CreateRGBSurface(0,newW,newH,32,0,0,0,0);
+
+            for (int i = 0; i < newW; i++)
+            {
+                for (int j = 0; j < newH; j++)
+                {
+                    putpixelval(img,i,j,getpixelval(image,let.TopX + i, let.TopY + j));
+                }
+            }
+            **/
+
+            if (registerImage == 1)
+            {
+                char buf[128];
+                int i = 0;
+
+                if (LetterCount + 65 <= 90)
+                {
+                    i = 65;
+                }
+                else
+                {
+                    i = 71;
+                }
+        
+                snprintf(buf, 128, "data/%c.png", (char) (i + LetterCount));
+
+                //g_print("W:%d\nH:%d\n", img->w, img->h);
+
+
+                /**
+                for (int i = 0; i < img->w; i++)
+                {
+                    for (int j = 0; j < img->h; j++)
+                    {
+                        g_print("%d\n",getPixelColor(img,getpixelval(img,i,j)));
+                    }
+                }
+                **/
+
+                SDL_SaveBMP(img,buf);
+            }
+            
+            Letters[LetterCount] = img;
+
+            //g_print("W:%d H:%d\n",let.BottomX - let.TopX,let.BottomY - let.TopY);
+            LetterCount++;
+        }
+        
     }
     
-
-    Iimage* img = malloc(sizeof(Iimage) + sizeof(letters));
-
     img->image = image;
     img->lineNumbers = numberOfLines;
 
     return img;
+}
+
+//Reduce White pixel at top and bottom of letters
+void reduceBlank(SDL_Surface* image, Letter* l)
+{
+    int IsHighMinimal = 0;
+    int isLowMinimal = 0;
+
+    //g_print("TopX:%d\nTopY:%d\nBottomX:%d\nBottomY:%d\n",l->TopX,l->TopY,l->BottomX,l->BottomY);
+
+    while (IsHighMinimal == 0)
+    {
+        int count = 0;
+        for (int i = 0; i < l->BottomX - l->TopX; i++)
+        {
+            if (getPixelColor(image,getpixelval(image,l->TopX + i, l->TopY)) == 0)
+            {
+                count++;
+            }
+        }
+        if (count == 0)
+        {
+            l->TopY++;
+            //g_print("TopX:%d\nTopY:%d\nBottomX:%d\nBottomY:%d\n///++///\n",l->TopX,l->TopY,l->BottomX,l->BottomY);
+        }
+        else
+        {
+            IsHighMinimal = 1;
+        } 
+    }
+    
+    while (isLowMinimal == 0)
+    {
+        int count = 0;
+        for (int i = 0; i < l->BottomX - l->TopX; i++)
+        {
+            if (getPixelColor(image,getpixelval(image,l->TopX + i, l->BottomY)) == 0)
+            {
+                count++;
+            }
+        }
+        if (count == 0)
+        {
+            l->BottomY--;
+            //g_print("TopX:%d\nTopY:%d\nBottomX:%d\nBottomY:%d\n///--///\n",l->TopX,l->TopY,l->BottomX,l->BottomY);
+        }
+        else
+        {
+            isLowMinimal = 1;
+        }
+    }
+}
+
+//Reduce to image of 28*28 pixels
+SDL_Surface* Reduce(SDL_Surface* image, Letter* l)
+{
+    int newH = l->BottomY - l->TopY; //X value to iterate
+    int newW = l->BottomX - l->TopX; //Y Value to iterate
+
+    SDL_Surface* finaldest = SDL_CreateRGBSurface(0,28,28,32,0,0,0,0); //Final image of 28*28
+
+    //If source image is under 28*28 on a axis we adjust it
+    if (newH < 29)
+    {
+        newH = 29;
+    }
+    if (newW < 29)
+    {
+        newW = 29;
+    }
+
+    SDL_Surface* dest = SDL_CreateRGBSurface(0,newW,newH,32,0,0,0,0);
+
+    //Draw a white rectangle to fill potential new image part created higher
+    SDL_Rect r;
+    r.x = 0;
+    r.y = 0;
+    r.w = dest->w;
+    r.h = dest->h;
+
+    SDL_FillRect(dest,&r,SDL_MapRGB(dest->format, 255,255,255));
+
+    //Copy source image to temp image of at least 28+*28+
+    for (int i = 0; i < l->BottomX - l->TopX; i++)
+        {
+        for (int j = 0; j < l->BottomY - l->TopY; j++)
+            {
+                putpixelval(dest,i,j,getpixelval(image,l->TopX + i, l->TopY + j));
+            }
+        }
+
+    //Reduce to 28*28
+    Stretch_Linear(dest,finaldest);
+
+    newH = 28;
+    newW = 28;
+    
+    return finaldest;
 }
 
 line *divideInLines(SDL_Surface* img, int nbL, VHistogram* h, SDL_Surface* Dbg)
@@ -197,20 +372,22 @@ line *divideInLines(SDL_Surface* img, int nbL, VHistogram* h, SDL_Surface* Dbg)
     return lines;
 }
 
-column *divideInLetter(SDL_Surface* img, line li,int* nb, SDL_Surface* Dbg)
+column *divideInLetter(Iimage* img, line li,int* nb, SDL_Surface* Dbg)
 {
+    SDL_Surface* image = img->image;
+
     HHistogram* hist = createHHistogram(img,li);
 
-    column* columns = malloc(NumberOfColumns(hist,img->w) * sizeof(column));
+    column* columns = malloc(NumberOfColumns(hist,image->w) * sizeof(column));
 
     int c = 0;
 
     int columnNumber = 0;
 
-    while (c < img->w)
+    while (c < image->w)
     {
         
-        int taille = columnSize(hist, c, img->w,0);
+        int taille = columnSize(hist, c, image->w,0);
 
         if (hist->hist[c] != 0)
         {
@@ -250,7 +427,6 @@ column *divideInLetter(SDL_Surface* img, line li,int* nb, SDL_Surface* Dbg)
 
     return columns;
 }
-
 
 int NumberOfLines(VHistogram* histogram,int h)
 {
@@ -431,4 +607,58 @@ Letter* mergeLetters(Letter* base, Letter* addition)
     }
     
     return result;
+}
+
+void Stretch_Linear(SDL_Surface* src,SDL_Surface* dest)
+{
+    double rx,ry;
+    //Ratio between the old and the new image.
+    rx = dest->w*1.0/src->w;
+    ry = dest->h*1.0/src->h;
+
+    for(int i=0;i<dest->w;i++)
+    {
+        for(int j=0;j<dest->h;j++)
+        {
+            double valx,valy,fx,fy;
+            int minx,miny,maxx,maxy;
+            valx = i/rx;
+            valy = j/ry;
+            minx = (int)valx;
+            miny = (int)valy;
+            maxx = minx+1;
+            if (maxx>=src->w)
+                maxx--;
+            maxy = miny+1;
+            if (maxy>=src->h)
+                maxy--;
+            fx = valx-minx;  // garde partie flottante
+            fy = valy-miny; 
+
+            Uint8 r1,g1,b1;
+            Uint32 pixel1 = getpixelval(src,minx,miny);
+            SDL_GetRGB(pixel1,dest->format,&r1,&g1,&b1);
+
+            Uint8 r2,g2,b2;
+            Uint32 pixel2 = getpixelval(src,maxx,miny);
+            SDL_GetRGB(pixel2,dest->format,&r2,&g2,&b2);
+
+            Uint8 r3,g3,b3;
+            Uint32 pixel3 = getpixelval(src,minx,maxy);
+            SDL_GetRGB(pixel3,dest->format,&r3,&g3,&b3);
+
+            Uint8 r4,g4,b4;
+            Uint32 pixel4 = getpixelval(src,maxx,maxy);
+            SDL_GetRGB(pixel4,dest->format,&r4,&g4,&b4);
+            
+            Uint8 rmoy = (Uint8)(r1*(1-fx)*(1-fy) + r2*fx*(1-fy) + r3*(1-fx)*fy + r4*fx*fy);
+            Uint8 gmoy = (Uint8)(g1*(1-fx)*(1-fy) + g2*fx*(1-fy) + g3*(1-fx)*fy + g4*fx*fy);
+            Uint8 bmoy = (Uint8)(b1*(1-fx)*(1-fy) + b2*fx*(1-fy) + b3*(1-fx)*fy + b4*fx*fy);
+
+            Uint32 newcolor = SDL_MapRGB(dest->format,rmoy,gmoy,bmoy);
+
+            putpixelval(dest,i,j,newcolor);
+
+        }
+    }
 }

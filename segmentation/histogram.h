@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <gtk/gtk.h>
 
 /*
 Histogram structure for VERTICAL image treatment
@@ -93,15 +94,16 @@ struct Iimage
 
     int lineNumbers;
 
-    struct Letter* Letters[];
+    int color;
 
+    SDL_Surface* Letters[10000];
 };
 
 
 /*
 Return the least present color in the image.
 */
-int getFontColor(SDL_Surface* image);
+int getFontColor(Iimage* img);
 
 /*
 Return a 0 or 1 value from a 32 bits pixel color representation.
@@ -111,17 +113,17 @@ int getPixelColor(SDL_Surface* image, Uint32 pixel);
 /*
 Return a line histogram from an image.
 */
-struct VHistogram* createVHistogram(SDL_Surface* image);
+struct VHistogram* createVHistogram(Iimage* img);
 
 /*
 Return a column histogram from an image.
 */
-struct HHistogram* createHHistogram(SDL_Surface* image, line li);
+struct HHistogram* createHHistogram(Iimage* img, line li);
 
 /*
 Return a image structure for the image and draw debug segmentation on debug.
 */
-struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug);
+struct Iimage* createImage(SDL_Surface* image, SDL_Surface* debug, int registerImage);
 
 /*
 Return a list of lines structures after segmentation.
@@ -131,7 +133,7 @@ line *divideInLines(SDL_Surface* i, int n,VHistogram* h, SDL_Surface* D);
 /*
 Return a list of columns structures after segmentation.
 */
-column *divideInLetter(SDL_Surface* image, line l, int *nbL,SDL_Surface* DBG);
+column *divideInLetter(Iimage* img, line l, int *nbL,SDL_Surface* DBG);
 
 /*
 Return the number of lines in the text.
@@ -160,6 +162,12 @@ void fixGroups(SDL_Surface* image, line l,column* columns,SDL_Surface* debug);
 
 //Should not exist
 Letter* mergeLetters(Letter* base, Letter* addition);
+
+void Stretch_Linear(SDL_Surface* src,SDL_Surface* dest);
+
+void reduceBlank(SDL_Surface* image, Letter* l);
+
+SDL_Surface* Reduce(SDL_Surface* image, Letter* l);
 
 
 #endif
