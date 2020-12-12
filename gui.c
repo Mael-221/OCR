@@ -17,7 +17,7 @@
 #include <SDL/SDL_image.h>
 #include <glib-object.h>
 #include <gobject/gvaluecollector.h>
-#include "NeuralNetwork/tools.h"
+#include "NeuralNetwork/Ntools.h"
 #include "NeuralNetwork/neural_network.h"
 
 //Make them Global
