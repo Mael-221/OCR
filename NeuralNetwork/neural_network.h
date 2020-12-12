@@ -31,7 +31,7 @@ struct Neural_Network
 
 };
 
-#include "tools.h"
+#include "Ntools.h"
 struct Neural_Network* InitializeNetwork();
 void OCR_Neural_Network(struct Neural_Network *net, double *inputs, double *goals);
 void Train_Neural_Network(struct Neural_Network *net);

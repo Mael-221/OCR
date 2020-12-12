@@ -1,5 +1,5 @@
-#ifndef TOOLS_H
-#define TOOLS_H
+#ifndef NTOOLS_H
+#define NTOOLS_H
 
 # include <stdlib.h>
 # include <stdio.h>

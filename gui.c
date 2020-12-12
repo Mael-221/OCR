@@ -8,7 +8,7 @@
 #include "pretreatment/rotation.h"
 #include <string.h>
 #include "segmentation2/image_conversion.h"
-#include "NeuralNetwork/NN_xor.h"
+//#include "NeuralNetwork/NN_xor.h"
 #include <unistd.h>
 #include <gtk/gtk.h>
 #include <math.h>
@@ -183,7 +183,9 @@ void on_training_neural_net_b_clicked()
 {
   printf("training neural network \n");
   struct Neural_Network *net=load();
+  //struct Neural_Network *net = InitializeNetwork();
   Train_Neural_Network(net);
+  
 }
 
 void on_launch_OCR_b_clicked ()
