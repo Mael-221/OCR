@@ -47,6 +47,7 @@ int is_file_load = 0;
 int is_image_display = 0;
 int rota = 0;
 int data_ID = 0;
+gchar *folder;
 FILE *fPtr;
 
 //begin SDL
@@ -92,7 +93,7 @@ void on_binarisation_b_clicked ()
   }
 }
 
-void on_segmentation_b_clicked (GtkEntry *e)
+void on_segmentation_b_clicked ()
 {
   
   if(is_file_load == 1)
@@ -101,6 +102,9 @@ void on_segmentation_b_clicked (GtkEntry *e)
     struct Neural_Network *net=load();
     Iimage* img = createImage(image,debug,0);
     char array[img->LetterNumbers];
+    fPtr = fopen("OCR_results.txt","w");
+    if(fPtr == NULL)
+      printf("unable to create file");
 
     for (int i = 0; i < img->LetterNumbers; i++)
     {
@@ -119,12 +123,12 @@ void on_segmentation_b_clicked (GtkEntry *e)
       default:
         break;
       }
+      fputs(array,fPtr);
       printf("%s", array);
     }
-    fPtr = fopen(gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(e)),"w");
-    if(fPtr == NULL)
-      printf("unable to create file");
-    fputs(array,fPtr);
+    fclose(fPtr);
+    
+    
   }
   if(is_image_display == 1)
   {
@@ -209,9 +213,10 @@ void on_create_data_set_changed(GtkEntry *e)
 
 void on_choose_file_file_set(GtkFileChooserButton *f)
 {
-  //printf("file name = %s \n",gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(f)));
+  printf("file name = %s \n",gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(f)));
   image = load_image(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(f)));
   debug = load_image(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(f)));
+  folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(f));
   is_file_load = 1;
   rota = 0;
   
@@ -226,12 +231,12 @@ void on_training_neural_net_b_clicked()
   
 }
 
-void on_launch_OCR_b_clicked (GtkEntry *e)
+void on_launch_OCR_b_clicked ()
 {
   printf("launched OCR \n");
   on_grayscale_b_clicked();
   on_binarisation_b_clicked();
-  on_segmentation_b_clicked(e);
+  on_segmentation_b_clicked();
 }
 //end GTK
 
@@ -266,7 +271,7 @@ int main ()
 
   g_signal_connect(grayscale_b,"clicked",G_CALLBACK(on_grayscale_b_clicked),NULL);
   g_signal_connect(binarisation_b,"clicked",G_CALLBACK(on_binarisation_b_clicked),NULL);
-  g_signal_connect(segmentation_b,"clicked",G_CALLBACK(on_segmentation_b_clicked),choose_file);
+  g_signal_connect(segmentation_b,"clicked",G_CALLBACK(on_segmentation_b_clicked),NULL);
   g_signal_connect(noise_b,"clicked",G_CALLBACK(on_noise_b_clicked),NULL);
   g_signal_connect(rotate_b,"clicked",G_CALLBACK(on_rotate_b_clicked),GTK_ENTRY(rotation_level));
   g_signal_connect(contrast_up_b,"clicked",G_CALLBACK(on_contrast_up_b_clicked),NULL);
@@ -275,7 +280,7 @@ int main ()
   g_signal_connect(create_data_set_b,"activate",G_CALLBACK(on_create_data_set_changed),create_data_set_b);
   g_signal_connect(choose_file,"file-set",G_CALLBACK(on_choose_file_file_set),choose_file);
   g_signal_connect(display_b,"clicked",G_CALLBACK(on_display_b_clicked),NULL);
-  g_signal_connect(launch_OCR,"clicked",G_CALLBACK(on_launch_OCR_b_clicked),choose_file);
+  g_signal_connect(launch_OCR,"clicked",G_CALLBACK(on_launch_OCR_b_clicked),NULL);
   g_signal_connect(train_net,"clicked",G_CALLBACK(on_training_neural_net_b_clicked),NULL);
   
   
