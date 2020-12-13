@@ -91,7 +91,7 @@ void on_binarisation_b_clicked ()
   }
 }
 
-char *on_segmentation_b_clicked ()
+void on_segmentation_b_clicked ()
 {
   
   if(is_file_load == 1)
