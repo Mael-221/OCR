@@ -123,9 +123,10 @@ void on_segmentation_b_clicked ()
       default:
         break;
       }
-      fputs(array,fPtr);
-      printf("%s", array);
+      
     }
+    fputs(array,fPtr);
+    printf("%s", array);
     fclose(fPtr);
     
     
