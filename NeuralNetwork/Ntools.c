@@ -178,7 +178,8 @@ struct Neural_Network* load ()
   {
     for(int h = 0; h < net -> nbHidden; ++h)
     {
-      fgets(line, sizeMax, weightIH);
+      char *c = fgets(line, sizeMax, weightIH);
+      if (c){};
       strtok(line, "\n");
       net -> WeightsIH[i][h] = atof(line);
     }
@@ -191,7 +192,8 @@ struct Neural_Network* load ()
   {
     for(int o = 0; o < net -> nbOutput; ++o)
     {
-        fgets(line, sizeMax, weightHO);
+        char *c = fgets(line, sizeMax, weightHO);
+        if (c){};
         strtok(line, "\n");
         net -> WeightsHO[h][o] = atof(line);
     }
@@ -202,7 +204,8 @@ struct Neural_Network* load ()
   FILE* biasH = fopen("biasH.b", "r");
   for(int h = 0; h < net -> nbHidden; ++h)
   {
-    fgets(line, sizeMax, biasH);
+    char *c = fgets(line, sizeMax, biasH);
+    if (c){};
     strtok(line, "\n");
     net -> BiasH[h] = atof(line);
   }
@@ -212,7 +215,8 @@ struct Neural_Network* load ()
   FILE* biasO = fopen("biasO.b", "r");
   for (int o = 0; o < net -> nbOutput; ++o)
   {
-    fgets(line, sizeMax, biasO);
+    char *c = fgets(line, sizeMax, biasO);
+    if (c){};
     strtok(line, "\n");
     net -> BiasO[o] = atof(line);
   }

@@ -1,20 +1,22 @@
 OCR by ScanR
 Compiled for unix systems in C99
 
-Parameters:
-first parameter should be a path to an image.
+Image:
+YOu should pick an image in the button in the bottom right hand corner.
 
-Accepted parameters:
+Buttons:
+grayscale: Apply the grayscale algorithm on the image.
+contrast down: Reduce the image contrast.
+contrast up: Add contrast to the image.
+binarization: Reduce colors to only black and white.
+noise reduction: Reduce image noise.
+Rotate: Rotate the image by the percentage in the box next to it. (Note: press enter in text box to apply change).
 
-binarization: -b -bin
-contrast down: -cdown -contrastdown
-contrast up: -cup -contrastup
-grayscale: -g -grayscale
-noise reduction: -n -noise
-Waiting for input: -w -wait
-Complete segmentation using method 1: -s -seg
-Complete segmentation using method 2: -s2 -seg2
-Neural network showcase: -XOR
-Show the current image: -show
+segmentation: Apply all segmentation on the image.
+[data ID ...] : create data set from the image.
 
-For every complete operation the result is stored in result.png in images/
+Train neural network: take the data set and train the neural network.
+
+Launch OCR: Take the image and apply the complete process and return the text in an .txt file (OCR_results.txt in main folder).
+
+Display: Open a tab with the image.
